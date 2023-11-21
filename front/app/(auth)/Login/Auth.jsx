@@ -1,6 +1,6 @@
 "use client";
 import { auth } from "@/app/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 
 //登録
@@ -46,13 +46,40 @@ export function Register () {
 }
 
 //既存のユーザーでログイン
-function Auth () {
-  signInWithEmailAndPassword(auth, email, password)
+export function Login () {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const hanldeLogin = (e) => {
+    e.preventDefault();
+    signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
+      alert("ログインしました")
     })
     .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
+      setError(error.message);
     })
+  }
+
+  return (
+    <>
+      <form onSubmit={hanldeLogin}>
+        <input 
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          type="text"
+          placeholder="example@example.com"
+          />
+        <input 
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          type="text"
+          placeholder="12345678"
+          />
+        <button type="submit">ログイン</button>
+      </form>
+      {error && <p>{error}</p>}
+    </>
+  )
 }
