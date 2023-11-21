@@ -1,0 +1,19 @@
+# Flask用のDockerfile
+# ベースイメージとしてPythonを使用
+FROM python:3.12.0
+
+# 作業ディレクトリを設定
+WORKDIR /usr/src/app
+ENV FLASK_APP=app
+
+# 依存関係のインストールに必要なファイルをコピー
+COPY requirements.txt ./
+
+# 依存関係のインストール
+COPY . .
+
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+# アプリケーションの起動
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
