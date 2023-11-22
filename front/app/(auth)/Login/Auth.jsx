@@ -1,7 +1,7 @@
 "use client";
 import { auth } from "../../firebase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { useState } from "react";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { useState , useEffect} from "react";
 
 //登録
 export function Register () {
@@ -46,42 +46,57 @@ export function Register () {
 }
 
 //既存のユーザーでログイン
-export function Login () {
+export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const hanldeLogin = (e) => {
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("ログインしているユーザー:", user);
+      } else {
+        console.log("ユーザーがログインしていません");
+      }
+    });
+
+    // コンポーネントのアンマウント時にリスナーを解除
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogin = (e) => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      const user = userCredential.user;
-      alert("ログインしました")
+      // ログイン成功時の処理
+      alert("ログインしました");
     })
     .catch((error) => {
+      // ログイン失敗時のエラー処理
       setError(error.message);
-    })
-  }
+    });
+  };
 
   return (
     <>
-      <form onSubmit={hanldeLogin}>
+      <form onSubmit={handleLogin}>
         <input 
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          type="text"
+          type="email" 
           placeholder="example@example.com"
-          />
+        />
         <input 
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          type="text"
+          type="password"
           placeholder="12345678"
-          />
+        />
         <button type="submit">ログイン</button>
       </form>
       {error && <p>{error}</p>}
     </>
-  )
+  );
 }
 
 //ログアウト
