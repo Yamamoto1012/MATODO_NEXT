@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import EditIcon from '@mui/icons-material/Edit';
+import { db } from "@/app/firebase";
 
 export default function AddTask() {
     // useStateを使って入力値を状態として持つ
@@ -14,7 +15,16 @@ export default function AddTask() {
     // keyeventの処理
     const handleKeyDown = (e) => {
         if (e.key === "Enter") {
-            // Enterが押されたら、todoを生成<=まだ作成していない
+            // Enterが押されたら、入力値をFirestoreに保存
+            const taskRef = db.collection("tasks").doc();
+            try {
+                taskRef.set({
+                    title: text,
+                });
+            } catch (error) {
+                console.log(error);
+                alert("データの保存に失敗しました。もう一度入力してください");
+            }
             setText("");
         } else if (e.key === "Escape") {
             // Escが押されたら、入力値をクリア
