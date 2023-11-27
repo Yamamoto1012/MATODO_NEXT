@@ -18,8 +18,6 @@ export default function RootLayout({ children }) {
     <html lang="ja">
       <body className={roboto.className}>
         {children}
-        <Login />
-        <Logout />
       </body>
     </html>
   )

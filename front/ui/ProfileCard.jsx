@@ -35,25 +35,25 @@ export default function ProfileCard() {
   }, []);
 
   return (
-    <div className="w-[241px] h-[60px] justify-start items-center inline-flex bg-[#393E46]">
+    <div className="flex">
       {user && (
         <>
-          <div className="justify-start h-[60px] items-center flex gap-2.5">
-            <div className=" justify-start items-center flex">
+          <div className="">
+            <div className="">
               <Link href="/Profile">
                 <Image
                   src={user.iconUrl || "./default-icon.svg"}
-                  width={60}
-                  height={60}
-                  className="w-[60px] h-[60px] rounded-[50px]"
+                  width={45}
+                  height={45}
+                  className="w-[45px] h-[45px] rounded-[50px]"
                   alt="User Icon"
                 />
               </Link>
             </div>
           </div>
-          <div className="grow shrink basis-0 flex-col justify-center items-start gap-[3px] inline-flex">
-            <div className="text-zinc-100 text-lg font-medium">{user.name}</div>
-            <div className="self-stretch text-slate-500 text-[15px] font-normal leading-relaxed tracking-wide">
+          <div className="">
+            <div className="">{user.name}</div>
+            <div className="">
               {user.positsion}
             </div>
           </div>
