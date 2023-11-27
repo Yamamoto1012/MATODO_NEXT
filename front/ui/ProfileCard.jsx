@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { auth, db } from "../app/firebase"; // 適切なパスに修正してください
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import Link from "next/link";
 
 export default function ProfileCard() {
   const [user, setUser] = useState(null);
@@ -39,13 +40,15 @@ export default function ProfileCard() {
         <>
           <div className="justify-start h-[60px] items-center flex gap-2.5">
             <div className=" justify-start items-center flex">
-              <Image
-                src={user.iconUrl || "./default-icon.svg"}
-                width={60}
-                height={60}
-                className="w-[60px] h-[60px] rounded-[50px]"
-                alt="User Icon"
-              />
+              <Link href="/Profile">
+                <Image
+                  src={user.iconUrl || "./default-icon.svg"}
+                  width={60}
+                  height={60}
+                  className="w-[60px] h-[60px] rounded-[50px]"
+                  alt="User Icon"
+                />
+              </Link>
             </div>
           </div>
           <div className="grow shrink basis-0 flex-col justify-center items-start gap-[3px] inline-flex">
