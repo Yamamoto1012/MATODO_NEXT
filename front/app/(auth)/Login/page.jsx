@@ -1,5 +1,5 @@
 import React from 'react'
-import { Register } from './Auth'
+import { GoogleLogin, Register } from './Auth'
 import { Login } from './Auth'
 
 const AuthPage = () => {
@@ -7,6 +7,7 @@ const AuthPage = () => {
     <>
       <Register />
       <Login />
+      <GoogleLogin />
     </>
   )
 }
