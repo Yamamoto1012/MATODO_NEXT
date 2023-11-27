@@ -6,7 +6,7 @@ export default function Days() {
 
     return (
         <div className='aspect-square w-[165px] h-[165px] bg-[#00ADB5] rounded-[20px]'>
-            <div className="text-[50px] text-roboto text-center" style={{ color: '#FFFFFF' }}>
+            <div className="text-[50px] text-center" style={{ color: '#FFFFFF' }}>
                 <p>{day}</p>
                 <p>{date}</p>
             </div>

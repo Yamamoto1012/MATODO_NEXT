@@ -1,11 +1,16 @@
 "use client";
 import React, { useState } from "react";
 import EditIcon from '@mui/icons-material/Edit';
-import { db } from "@/app/firebase";
 
 export default function AddTask() {
     // useStateを使って入力値を状態として持つ
     const [text, setText] = useState("");
+
+    // tasksのdatabaseに必要な要素
+    const urgency = null;
+    const importance = null;
+    const isDone= false;
+    const favorite = false;
 
     // テキストフィールドの値の変更を反映させる
     const changeText = (e) => {
@@ -16,10 +21,15 @@ export default function AddTask() {
     const handleKeyDown = (e) => {
         if (e.key === "Enter") {
             // Enterが押されたら、入力値をFirestoreに保存
-            const taskRef = db.collection("tasks").doc();
+            const taskRef = db.collection("tasks").doc(currentUser.uid);
             try {
                 taskRef.set({
+                    userId: currentUser.uid,
                     title: text,
+                    urgency: urgency,
+                    importance: importance,
+                    isDone: isDone,
+                    favorite: favorite,
                 });
             } catch (error) {
                 console.log(error);
