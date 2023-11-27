@@ -1,6 +1,6 @@
 "use client";
 import { auth } from "../../firebase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useState , useEffect} from "react";
 
 //登録
@@ -43,6 +43,28 @@ export function Register () {
         {error && <p>{error}</p>}
       </>
     )
+}
+
+//Googleアカウントでログイン
+export function GoogleLogin() {
+  const provider = new GoogleAuthProvider();
+  const handleGoogle = () => {
+    signInWithPopup(auth, provider)
+    .then((result) => {
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential.accessToken;
+      const user = result.user;
+    }).catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      const credential = GoogleAuthProvider.credentialFromError(error);
+    })
+  }
+  return (
+    <>
+      <button onClick={handleGoogle}>Googleでログイン</button>
+    </>
+  )
 }
 
 //既存のユーザーでログイン
