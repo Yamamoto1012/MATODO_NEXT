@@ -1,43 +1,37 @@
 "use client";
 import React, { useState } from "react";
 import EditIcon from '@mui/icons-material/Edit';
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "../app/firebase";
 
 export default function AddTask() {
-    // useStateを使って入力値を状態として持つ
     const [text, setText] = useState("");
 
-    // tasksのdatabaseに必要な要素
-    const urgency = null;
+    const description = null;
     const importance = null;
-    const isDone= false;
-    const favorite = false;
+    const isDone = false;
+    const urgency = null;
+    const deadline = null;
 
-    // テキストフィールドの値の変更を反映させる
     const changeText = (e) => {
         setText(e.target.value);
-    };
+    }
 
-    // keyeventの処理
     const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
-            // Enterが押されたら、入力値をFirestoreに保存
-            const taskRef = db.collection("tasks").doc(currentUser.uid);
-            try {
-                taskRef.set({
-                    userId: currentUser.uid,
-                    title: text,
-                    urgency: urgency,
-                    importance: importance,
-                    isDone: isDone,
-                    favorite: favorite,
-                });
-            } catch (error) {
-                console.log(error);
-                alert("データの保存に失敗しました。もう一度入力してください");
+        if (e.key === 'Enter') {
+            const currentUser = auth.currentUser;
+            const newTask = {
+                userId: currentUser.uid,
+                title: text,
+                description: description,
+                importance: importance,
+                isDone: isDone,
+                urgency: urgency,
+                deadline: deadline,
             }
+            setDoc(doc(db, 'tasks', text), newTask)
             setText("");
-        } else if (e.key === "Escape") {
-            // Escが押されたら、入力値をクリア
+        } else if (e.key === 'Escape') {
             setText("");
         }
     }
