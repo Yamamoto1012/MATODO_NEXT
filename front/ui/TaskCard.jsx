@@ -24,8 +24,7 @@ export default function TaskCard() {
                 <div key={task.id}>
                     <p>{task.isDone}</p>
                     <p>{task.title}</p>
-                    <p>{task.urgency}</p>
-                    <p>{task.favorite}</p>
+                    <p>{task.date}</p>
                 </div>
             ))}
         </div>

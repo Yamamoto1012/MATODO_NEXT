@@ -1,20 +1,17 @@
 'use client'
 
-import ProfileCard from '../ui/ProfileCard'
 import AddTask from '../ui/AddTask'
-import Days from '../ui/Days'
-import TaskCard from '../ui/TaskCard'
 import SideBar from '../ui/SideBar'
+import MatrixArea from '../ui/MatrixArea'
 
 export default function Home() {
   return (
-    <div className=' bg-slate-700 h-[100vh] w-screen flex'>
+    <div className='bg-[#393E4F] h-[100vh] w-screen flex'>
       <SideBar />
-      <div className='shadow-lg h-[100vh] w-[82vw] flex flex-col items-center bg-[#222831]'>
-        <div>
-          <div>
-            <AddTask />
-          </div>
+      <div className='relative shadow-lg h-[100vh] w-[70vw] md:w-[82vw] flex flex-col items-center bg-[#222831]'>
+        <MatrixArea />
+        <div className='absolute bottom-12 w-full items-center justify-center flex'>
+          <AddTask />
         </div> 
       </div>
     </div>
