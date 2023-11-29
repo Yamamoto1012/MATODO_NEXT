@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import EditIcon from '@mui/icons-material/Edit';
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../app/firebase";
 
@@ -37,19 +37,18 @@ export default function AddTask() {
     }
 
     return (
-        <div className='bg-[#EEEEEE] w-[1035px] h-[72px] rounded-full'>
-            <div className='flex flex-row ' style={{ color: '#00ADB5'}}>
-                <p className='w-[40px] h-[40px] ml-[10px] my-5'>
-                    <EditIcon/>
-                </p>
+        <div className='bg-[#222831] w-[450px] md:w-[600px] lg:w-[800px] h-14 md:h-[60px] rounded-full outline outline-white outline-1'>
+            <div className='flex flex-row items-center text-[#00ADB5] '>
+                <div className='w-[25px] h-[25px] ml-3 mr-2 my-5'>
+                    <CreateOutlinedIcon/>
+                </div>
                 <input 
                     type='text'
                     placeholder='タスクを入力'
                     value={text}
                     onChange={changeText}
                     onKeyDown={handleKeyDown}
-                    className="w-[950px] h-[72px] outline-none"
-                    style={{ fontSize: '18px',fontFamily: 'Roboto',color: '#00ADB5', backgroundColor: '#EEEEEE'}}
+                    className="w-full max-w-xs md:max-w-md lg:max-w-lg bg-[#222831] h-auto outline-none placeholder-[#00ADB5] text-base"
                 />
             </div>
         </div>
