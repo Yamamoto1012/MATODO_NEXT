@@ -7,18 +7,31 @@ import { auth, db } from "../app/firebase";
 export default function AddTask() {
     const [text, setText] = useState("");
 
+    //締切を入力した当日にする
+    const deadline = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth() + 1;
+        const date = today.getDate();
+
+        const formattedMonth = month < 10 ? '0' + month : month;
+        const formattedDate = date < 10 ? '0' + date : date;
+
+        return `${year}-${formattedMonth}-${formattedDate}`;
+    }
+
     const description = null;
     const importance = null;
     const isDone = false;
     const urgency = null;
-    const deadline = null;
+
 
     const changeText = (e) => {
         setText(e.target.value);
     }
 
     const handleKeyDown = (e) => {
-        if (e.key === 'Enter') {
+        if (e.keyCode === 13 && !e.isComposing) {
             const currentUser = auth.currentUser;
             const newTask = {
                 userId: currentUser.uid,
@@ -27,14 +40,32 @@ export default function AddTask() {
                 importance: importance,
                 isDone: isDone,
                 urgency: urgency,
-                deadline: deadline,
+                deadline: deadline(),
             }
             setDoc(doc(db, 'tasks', text), newTask)
             setText("");
         } else if (e.key === 'Escape') {
             setText("");
         }
-    }
+    
+        if (e.keyCode === 13 && e.isComposing) {
+            e.preventDefault();
+        } else if (e.keyCode === 13 && !e.isComposing) {
+            const currentUser = auth.currentUser;
+            const newTask = {
+                userId: currentUser.uid,
+                title: text,
+                description: description,
+                importance: importance,
+                isDone: isDone,
+                urgency: urgency,
+                deadline: deadline(),
+            }
+            setDoc(doc(db, 'tasks', text), newTask)
+            setText("");
+        }
+    };
+    
 
     return (
         <div className='bg-[#222831] w-[450px] md:w-[600px] lg:w-[800px] h-14 md:h-[60px] rounded-full outline outline-white outline-1'>
