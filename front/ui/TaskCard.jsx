@@ -23,7 +23,8 @@ export default function TaskCard() {
     return () => unsubscribe();
   }, []);
 
-  const handleChange = async (taskId, isDone) => {
+  const handleChange = async (e, taskId, isDone) => {
+    e.stopPropagation(); // 親要素に伝達しない様にする。
     // FirebaseのtasksテーブルのtaskのisDoneを更新する
     const taskRef = doc(db, "tasks", taskId);
     await updateDoc(taskRef, {
@@ -50,15 +51,16 @@ export default function TaskCard() {
             className={`bg-[#2B2D42] rounded-[15px] shadow-md p-2 mx-1 flex items-center transition duration-500 ease-in-out cursor-pointer`}
             onClick={() => handleTaskCardClick(task)}
           >
-            <div className="flex items-center h-4 w-4 ml-2 rounded-full border-none">
+            <div className="flex items-center h-4 w-4 ml-2 rounded-full border-none" onClick={(e) => e.stopPropagation()}>
               <input
                 type="checkbox"
                 checked={task.isDone}
-                onChange={() => handleChange(task.id, !task.isDone)}
+                onChange={(e) => handleChange(e, task.id, !task.isDone)}
                 className="rounded-full h-4 w-4 text-blue-600"
+                onClick={(e) => e.stopPropagation()} // ここでも伝播を止める
               />
             </div>
-            <div className="ml-4">
+            <div className="ml-4" onClick={() => handleTaskCardClick(task)}>
               <p className="text-[14px] font-light text-white">{task.title}</p>
               <p className="text-[12px] text-red-500">{task.deadline}</p>
             </div>
