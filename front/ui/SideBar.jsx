@@ -1,7 +1,7 @@
 import React from 'react'
 import Days from './Days'
 import ProfileCard from './ProfileCard'
-import TaskCard from './TaskCard'
+import TaskList from './TaskList'
 
 function SideBar() {
   return (
@@ -12,7 +12,7 @@ function SideBar() {
           </div>
 
           <div className='w-full flex-grow overflow-auto'>
-            <TaskCard />
+            <TaskList />
           </div>
           <div className='w-full p-4'>
             <ProfileCard />
