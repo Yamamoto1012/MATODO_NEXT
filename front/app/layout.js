@@ -1,5 +1,5 @@
 import { Roboto } from 'next/font/google'
-import { Login, Logout } from './(auth)/Login/Auth'
+import { Login, Logout } from './(auth)/Auth/Auth'
 import './globals.css'
 
 const roboto = Roboto({

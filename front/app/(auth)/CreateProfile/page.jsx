@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
-import { auth, db, storage } from "../firebase";
+import { auth, db, storage } from "../../firebase";
 import { doc, setDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; 
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-export default function CreateProfile() {
+export default function page() {
   const [name, setName] = useState("");
   const [position, setPosition] = useState("");
   const [icon, setIcon] = useState(null);
@@ -66,10 +66,10 @@ export default function CreateProfile() {
           />
           {/* アイコン画像を追加 */}
           <input type="file" accept="image/*" onChange={handleIconChange} />
+
           <button type="submit">アカウント作成</button>
         </form>
       </>
     );
   };
 }
-
