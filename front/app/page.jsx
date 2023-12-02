@@ -1,10 +1,10 @@
 'use client'
-
 import AddTask from '../ui/AddTask'
 import SideBar from '../ui/SideBar'
 import MatrixArea from '../ui/MatrixArea'
 
 export default function Home() {
+
   return (
     <div className='bg-[#393E4F] h-[100vh] w-screen flex'>
       <SideBar />

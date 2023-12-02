@@ -3,9 +3,12 @@ import React, { useEffect, useState } from "react";
 import { auth, db } from "../app/firebase";
 import { query, collection, onSnapshot, doc, updateDoc } from "firebase/firestore";
 import TaskCard from './TaskCard';
+import { useSortable } from '@dnd-kit/core';
 
-export default function TaskList() {
-  const [tasks, setTasks] = useState([]);
+export default function TaskList({ task, onCheckboxChange, onCardClick}) {
+  const { attributes, listeners, setNodeRef } = useSortable({
+    id: task.id,
+  });
   const [selectedTask, setSelectedTask] = useState(null);
   const [showSidebar, setShowSidebar] = useState(false);
 
@@ -44,15 +47,23 @@ export default function TaskList() {
 
   return (
     <>
-      <div className="space-y-4">
-        {tasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            onCheckboxChange={handleChange}
-            onCardClick={handleTaskCardClick}
-          />
-        ))}
+      <div
+        ref={setNodeRef} 
+        {...listeners}
+        {...attributes}
+        onClick={() => onCardClick(task)}
+      >
+        <div className="space-y-4">
+          {tasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              onCheckboxChange={handleChange}
+              onCardClick={handleTaskCardClick}
+            />
+          ))}
+        </div>
+        <div></div>
       </div>
       {/* サイドバー関連のコード... */}
       {showSidebar && selectedTask && (
