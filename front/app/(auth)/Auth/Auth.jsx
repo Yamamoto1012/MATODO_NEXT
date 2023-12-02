@@ -2,16 +2,20 @@
 import Image from "next/image";
 import { auth } from "../../firebase";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { useRouter } from "next/navigation";
+
 
 //Googleアカウントでログイン
 export function GoogleLogin() {
   const provider = new GoogleAuthProvider();
+  const router = useRouter();
   const handleGoogle = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
         const user = result.user;
+        router.push("/CretaeProfile");
       })
       .catch((error) => {
         const errorCode = error.code;
