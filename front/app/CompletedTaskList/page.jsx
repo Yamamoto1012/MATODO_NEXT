@@ -9,8 +9,9 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
-import SideBar from "../../ui/SideBar";
+
 import AddTask from "../../ui/AddTask";
+import Menu from "../../ui/Menu";
 
 export default function Page() {
   const [tasks, setTasks] = useState([]);
@@ -41,7 +42,7 @@ export default function Page() {
 
   return (
     <div className="flex h-screen bg-gray-800 text-white">
-      <SideBar /> {/* Assuming SideBar is another component you have */}
+      <Menu />
       <div className="flex-1 flex flex-col items-center px-16 py-8">
         <div className="py-6 space-y-2 w-full max-w-full ">
           <h2 className="text-4xl font-semibold text-[#00ADB5]">

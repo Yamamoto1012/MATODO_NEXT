@@ -4,7 +4,7 @@ import ProfileCard from "./ProfileCard";
 import TaskList from "./TaskList";
 import CompletedTaskButton from "./CompletedTaskButton";
 
-function SideBar() {
+function Menu() {
   return (
     <div className="p-6">
       <div className="w-60 bg-[#393E4F] rounded-2xl shadow-2xl h-[95vh] flex flex-col">
@@ -26,4 +26,4 @@ function SideBar() {
   );
 }
 
-export default SideBar;
+export default Menu;

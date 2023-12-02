@@ -1,6 +1,7 @@
 // 親コンポーネント
-import React, { memo, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import NicoNico from "./NicoNico";
 import { db } from "../app/firebase";
 import {
   query,
@@ -20,6 +21,7 @@ export default function TaskList() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [showSidebar, setShowSidebar] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     const q = query(collection(db, "tasks"));
@@ -54,6 +56,33 @@ export default function TaskList() {
       });
       setSelectedTask({ ...selectedTask, memo: memo });
     }
+    setComments(`${selectedTask.title}のメモが更新されました`);
+  };
+
+  const handleImportanceChange = async (e) => {
+    e.preventDefault();
+    const importance = e.target.importance.value;
+    if (selectedTask) {
+      const taskRef = doc(db, "tasks", selectedTask.id);
+      updateDoc(taskRef, {
+        importance: importance,
+      });
+      setSelectedTask({ ...selectedTask, importance: importance });
+    }
+    setComments(`${selectedTask.title}の重要度が更新されました`);
+  };
+
+  const handleUrgencyChange = async (e) => {
+    e.preventDefault();
+    const urgency = e.target.urgency.value;
+    if (selectedTask) {
+      const taskRef = doc(db, "tasks", selectedTask.id);
+      updateDoc(taskRef, {
+        urgency: urgency,
+      });
+      setSelectedTask({ ...selectedTask, urgency: urgency });
+    }
+    setComments(`${selectedTask.title}の緊急度が更新されました`);
   };
 
   const handleDateChange = (date) => {
@@ -68,9 +97,10 @@ export default function TaskList() {
         deadline: date.toISOString().split("T")[0],
       });
     }
+    setComments(`${selectedTask.title}の期限が更新されました`);
   };
 
-  const handleTitleChange = async(e) => {
+  const handleTitleChange = async (e) => {
     e.preventDefault();
     const title = e.target.title.value;
     if (selectedTask) {
@@ -80,7 +110,8 @@ export default function TaskList() {
       });
       setSelectedTask({ ...selectedTask, title: title });
     }
-  }
+    setComments(`${selectedTask.title}のタイトルが更新されました`);
+  };
 
   const handleTaskCardClick = (task) => {
     setSelectedTask(task);
@@ -98,8 +129,8 @@ export default function TaskList() {
     const taskRef = doc(db, "tasks", selectedTask.id);
     await deleteDoc(taskRef);
     setShowSidebar(false);
-    setSelectedTask(null); 
-  }
+    setSelectedTask(null);
+  };
 
   return (
     <>
@@ -115,14 +146,15 @@ export default function TaskList() {
         ))}
       </div>
 
-      {/* Sidebar */}
+      {/* タスクのサイドバー */}
       {showSidebar && selectedTask && (
         <div
           className={`fixed inset-y-0 right-0 w-80 bg-[#1F1F1F] shadow-2xl p-8 z-50 transform transition-transform duration-300 ease-in-out ${
             showSidebar ? "translate-x-0" : "translate-x-full"
           }`}
-          style={{ boxShadow: '4px 0 15px rgba(0, 0, 0, .5)' }}
+          style={{ boxShadow: "4px 0 15px rgba(0, 0, 0, .5)" }}
         >
+          <NicoNico comment={comments} />
           <button
             onClick={closeSidebar}
             className="text-white rounded-full p-2 hover:bg-[#333333] focus:outline-none absolute top-4 right-4"
@@ -130,11 +162,13 @@ export default function TaskList() {
             <CloseIcon fontSize="large" />
           </button>
 
-          <div className="flex flex-col items-start justify-between h-full">
+          <div className="flex flex-col items-start justify-between h-full overflow-y-auto">
             <div className="w-full">
-              {/* Task title */}
+              {/* タスクのタイトル */}
               <form onSubmit={handleTitleChange} className="space-y-4">
-                <h3 className="text-lg font-semibold text-[#00ADB5]">タスク名</h3>
+                <h3 className="text-lg font-semibold text-[#00ADB5]">
+                  タスク名
+                </h3>
                 <input
                   name="title"
                   type="text"
@@ -150,7 +184,7 @@ export default function TaskList() {
               </form>
             </div>
 
-            {/* Task date */}
+            {/* タスクの日程変更 */}
             <div className="w-full mt-6">
               <CalendarMonthOutlinedIcon className="text-[#00ADB5]" />
               <DatePicker
@@ -163,7 +197,7 @@ export default function TaskList() {
               />
             </div>
 
-            {/* Task memo */}
+            {/* タスクのメモ記述 */}
             <div className="w-full mt-6">
               <p className="text-lg font-semibold text-white">メモ</p>
               <form onSubmit={handleMemoChange}>
@@ -181,7 +215,49 @@ export default function TaskList() {
               </form>
             </div>
 
-            {/* Delete task */}
+            {/* 優先度の編集フォーム */}
+            <div className="w-full mt-6">
+              <p className="text-lg font-semibold text-white">優先度</p>
+              <form onSubmit={handleImportanceChange}>
+                <select
+                  name="importance"
+                  className="w-full bg-[#2A2A2A] text-white rounded-lg p-2 outline-none border border-transparent focus:border-[#00ADB5]"
+                  defaultValue={selectedTask.importance || ""}
+                >
+                  <option value="high">高</option>
+                  <option value="low">低</option>
+                </select>
+                <button
+                  type="submit"
+                  className="w-full bg-[#00ADB5] text-white rounded-lg p-2 mt-4 hover:bg-[#008a9e]"
+                >
+                  更新
+                </button>
+              </form>
+            </div>
+
+            {/* 重要度の編集フォーム */}
+            <div className="w-full mt-6">
+              <p className="text-lg font-semibold text-white">重要度</p>
+              <form onSubmit={handleUrgencyChange}>
+                <select
+                  name="urgency"
+                  className="w-full bg-[#2A2A2A] text-white rounded-lg p-2 outline-none border border-transparent focus:border-[#00ADB5]"
+                  defaultValue={selectedTask.urgency || ""}
+                >
+                  <option value="high">高</option>
+                  <option value="low">低</option>
+                </select>
+                <button
+                  type="submit"
+                  className="w-full bg-[#00ADB5] text-white rounded-lg p-2 mt-4 hover:bg-[#008a9e]"
+                >
+                  更新
+                </button>
+              </form>
+            </div>
+
+            {/* タスクの削除 */}
             <div className="w-full mt-6">
               <button
                 onClick={handleDelete}

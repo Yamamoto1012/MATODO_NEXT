@@ -1,0 +1,21 @@
+.comment-flow {
+  position: fixed;
+  font-size: 2rem;
+  left: 100%;
+  top: 25%;
+  transform: translate(-100%, -100%);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  white-space: nowrap;
+  animation: flow 2s linear;
+}
+
+@keyframes flow {
+  from {
+    left: 100%;
+  }
+  to {
+    left: -400%;
+  }
+}
