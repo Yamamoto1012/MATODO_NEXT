@@ -2,43 +2,51 @@
 import {
   collection,
   doc,
-  getDocs,
+  onSnapshot,
   query,
   updateDoc,
   where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { db } from "../firebase";
+import { auth, db } from "../firebase";
 
 import AddTask from "../../ui/AddTask";
 import Menu from "../../ui/Menu";
 
 export default function Page() {
   const [tasks, setTasks] = useState([]);
-  const [animatingTaskId, setAnimatingTaskId] = useState(null);
 
-  const fetchTasks = async () => {
-    const tasksCollectionRef = collection(db, "tasks");
-    const q = query(tasksCollectionRef, where("isDone", "==", true));
-    const querySnapshot = await getDocs(q);
-    const tasksData = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setTasks(tasksData);
-  };
-
+  useEffect(() => {
+    if (auth.currentUser) {
+      const userId = auth.currentUser.uid;
+      const tasksCollectionRef = collection(db, "tasks");
+      const q = query(
+        tasksCollectionRef,
+        where("userId", "==", userId),
+        where("isDone", "==", true)
+      );
+  
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const tasksData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setTasks(tasksData);
+      });
+  
+      // コンポーネントのアンマウント時にリスナーを解除
+      return () => unsubscribe();
+    }
+  }, [auth.currentUser]);
+  
   const revertTask = async (taskId) => {
     const taskDocRef = doc(db, "tasks", taskId);
     await updateDoc(taskDocRef, {
       isDone: false,
     });
-    await fetchTasks(); // タスクのリストを更新
+    // データの更新は onSnapshot によって自動的に処理されるので、fetchTasks を呼び出す必要はありません。
   };
-
-  useEffect(() => {
-    fetchTasks();
-  }, []); // 空の依存関係配列を保持
+  
 
   return (
     <div className="flex h-screen bg-gray-800 text-white">

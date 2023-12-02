@@ -45,14 +45,30 @@ export default function TaskList() {
   };
 
   useEffect(() => {
-    // 認証状態が確定するまで待機する
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        fetchTasks();
+        const q = query(
+          collection(db, "tasks"),
+          where("userId", "==", user.uid),
+          where("isDone", "==", false)
+        );
+  
+        const unsubscribeTasks = onSnapshot(q, (querySnapshot) => {
+          const tasksArr = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setTasks(tasksArr);
+        });
+  
+        // タスクのリスナーの解除
+        return () => unsubscribeTasks();
       }
     });
+  
+    // 認証状態のリスナーの解除
     return () => unsubscribe();
-  }, []);
+  }, []);  
 
   const handleChange = async (e, taskId, isDone) => {
     e.stopPropagation(); // 親要素に伝達しない様にする。
