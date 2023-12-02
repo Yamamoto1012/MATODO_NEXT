@@ -43,7 +43,7 @@ export default function Page() {
         iconUrl: iconUrl,
       });
       console.log("プロフィールが作成されました");
-      router.push("/");
+      router.push("/Home");
     } catch (error) {
       console.error("エラーが発生しました", error);
     }
@@ -51,63 +51,53 @@ export default function Page() {
 
   // コンポーネントのレンダリング部分
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <div className="flex flex-col justify-center items-center min-h-screen">
+      <h2 className="text-4xl font-bold text-[#00ADB5] mb-6">プロフィール作成</h2>
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-xl shadow-md max-w-2xl w-full mx-4"
+        className="bg-white p-8 rounded-2xl shadow-lg max-w-lg w-full mx-4"
       >
-        <div className="mb-6">
-          <div className="flex items-center h-4 w-full">
-            <p
-              className="text-gray-700 text-sm font-medium mb-2"
-              htmlFor="email"
-            >
-              ユーザー名
-            </p>
-            <p className="text-red-500 text-[12px] mb-2">(必須)</p>
-          </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-medium mb-1" htmlFor="name">
+            ユーザー名 <span className="text-red-500">*</span>
+          </label>
           <input
             id="name"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="dmn大郎"
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            placeholder="工大太郎"
+            className="w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500"
             required
           />
         </div>
-        <div className="mb-6">
-          <div className="flex items-center h-4 w-full">
-            <p className="text-black text-sm font-medium mb-2" htmlFor="email">
-              役職
-            </p>
-            <p className="text-red-500 text-[12px] mb-2">(必須)</p>
-          </div>
+
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-medium mb-1" htmlFor="position">
+            役職 <span className="text-red-500">*</span>
+          </label>
           <input
             id="position"
             type="text"
             value={position}
             onChange={(e) => setPosition(e.target.value)}
             placeholder="役職"
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-transform duration-150 ease-in-out transform hover:scale-105"
+            className="w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500"
             required
           />
         </div>
 
         <div className="mb-6">
-          <label
-            htmlFor="icon"
-            className="block text-sm font-medium text-gray-700"
-          >
-            アイコン (任意)
+          <label className="block text-gray-700 text-sm font-medium mb-1" htmlFor="icon">
+            アイコン <span className="text-red-500">*</span>
           </label>
-          <div className="mt-1 flex items-center">
-            <span className="rounded-md border border-gray-300 shadow-sm bg-white py-2 px-3 text-sm leading-4 text-gray-700">
+          <div className="flex items-center">
+            <span className="inline-block bg-gray-100 rounded-md py-2 px-3 text-sm text-gray-700 mr-3">
               {icon ? icon.name : "アイコンを選択"}
             </span>
             <button
               type="button"
-              className="ml-3 bg-[#00ADB5] text-white font-bold py-2 px-4 rounded-xl"
+              className="bg-[#00ADB5] text-white font-bold py-2 px-4 rounded-md transition-transform duration-150 ease-in-out transform hover:scale-105"
               onClick={() => document.getElementById("icon").click()}
             >
               アップロード
@@ -124,7 +114,7 @@ export default function Page() {
 
         <button
           type="submit"
-          className="w-full bg-[#00ADB5] text-white font-bold py-2 px-4 rounded-xl transition-transform duration-150 ease-in-out transform hover:scale-105"
+          className="w-full bg-[#00ADB5] text-white font-bold py-2 px-4 rounded-md transition-transform duration-150 ease-in-out transform hover:scale-105"
         >
           アカウント作成
         </button>

@@ -1,8 +1,7 @@
 "use client";
-
-import AddTask from "../ui/AddTask";
-import Menu from "../ui/Menu";
-import MatrixArea from "../ui/MatrixArea";
+import Menu from "../../ui/Menu";
+import MatrixArea from "../../ui/MatrixArea";
+import AddTask from "../../ui/AddTask";
 
 export default function page() {
   return (

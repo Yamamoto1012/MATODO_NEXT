@@ -1,8 +1,9 @@
 "use client";
 import Image from "next/image";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { doc, getDoc } from "firebase/firestore";
 
 
 //Googleアカウントでログイン
@@ -11,16 +12,22 @@ export function GoogleLogin() {
   const router = useRouter();
   const handleGoogle = () => {
     signInWithPopup(auth, provider)
-      .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
+      .then(async (result) => {
         const user = result.user;
-        router.push("/CretaeProfile");
+        // Firestoreでユーザープロフィールを確認
+        const userProfileRef = doc(db, "users", user.uid);
+        const userProfileSnap = await getDoc(userProfileRef);
+
+        if (userProfileSnap.exists()) {
+          // プロフィールが存在する場合、Homeにリダイレクト
+          router.push("/Home");
+        } else {
+          // プロフィールが存在しない場合、プロフィール作成ページにリダイレクト
+          router.push("/CreateProfile");
+        }
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        const credential = GoogleAuthProvider.credentialFromError(error);
+        console.error("ログインエラー", error);
       });
   };
   return (
