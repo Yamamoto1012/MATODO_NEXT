@@ -41,6 +41,19 @@ def enter_kamoku():
     return m_res
 
 
+# テキストファイルの読み込み
+def read_text():
+    read_txtfile= open( 
+        "info_network.txt",
+        "r",
+        encoding = "utf-8"
+    )
+    sample_text = read_txtfile.read()
+    read_txtfile.close()
+    
+    return sample_text
+
+
 def main_scrape():
     
     #2 環境変数の呼び出し
@@ -80,11 +93,11 @@ def main_scrape():
     #data = kamoku_info()
     #time.sleep(1)
     
-    
+
     # 科目のページに入る関数
     data2 = enter_kamoku()
     time.sleep(1)
-    
+
     return data2.text
 
 
