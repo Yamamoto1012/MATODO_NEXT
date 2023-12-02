@@ -47,8 +47,11 @@ def read_text():
         "info_network.txt",
         "r",
         encoding = "utf-8"
-    )
+    ) 
+    
+    # 文字列を変数に退避
     sample_text = read_txtfile.read()
+    
     read_txtfile.close()
     
     return sample_text
@@ -59,46 +62,46 @@ def main_scrape():
     #2 環境変数の呼び出し
     uid = os.environ.get("uid")
     pw = os.environ.get("pw")
-
+    
     # セッションを開始
     url = "https://navi.mars.kanazawa-it.ac.jp/portal/student"
-
+    
     global session
     session = requests.session()
     response = session.get(url)
-
-    soup = BeautifulSoup(response.text, 'html.parser')
     
+    soup = BeautifulSoup(response.text, 'html.parser')
+
     # ログインフォームの情報を取得
     form = soup.find('form', {'name': 'loginform'})
-    
+
     # ログインフォーム内のCSRFトークンを取得
     authenticity = form.find(attrs={'name': '_csrf'}).get('value')
-    
+
     # ログインに必要な情報
     loginfo = {
         "_csrf": authenticity,
         "uid": uid,  # ここに学籍番号を入力
         "pw": pw  # ここにパスワードを入力
     }
-    
+
     # ログイン用のURLを指定し、POSTリクエストを送信
     login_url = "https://navi.mars.kanazawa-it.ac.jp/portal/student/inKITP0000001Login" #エンドポイント設定
     res = session.post(login_url, data=loginfo)
-    
+
     time.sleep(1)
 
 
     #履修中の科目情報を取得する関数呼びだし
-    #data = kamoku_info()
-    #time.sleep(1)
+    data = kamoku_info()
+    time.sleep(1)
     
 
     # 科目のページに入る関数
     data2 = enter_kamoku()
     time.sleep(1)
 
-    return data2.text
+    return 
 
 
 @app.route("/")
