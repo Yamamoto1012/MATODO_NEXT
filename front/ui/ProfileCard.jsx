@@ -35,7 +35,7 @@ export default function ProfileCard() {
   }, []);
 
   return (
-    <div className=" w-full h-14 flex items-center space-x-2 border bg-[#222831] p-1 rounded-lg shadow-lg">
+    <div className=" w-full h-14 flex items-center space-x-2 border bg-[#222831] p-1 rounded-lg shadow-lg transform transition-transform duration-150 ease-in-out hover:scale-125">
       {user && (
         <>
           <div className="shrink-0 h-14 items-center justify-center flex">
@@ -50,14 +50,13 @@ export default function ProfileCard() {
             </Link>
           </div>
           <div className="h-15 w-full flex flex-col">
-            <div className="text-[#EEEEEE] text-base font-normal">{user.name}</div>
-            <div className="text-[#78858F] text-sm">
-              {user.position}
+            <div className="text-[#EEEEEE] text-base font-normal">
+              {user.name}
             </div>
+            <div className="text-[#78858F] text-sm">{user.position}</div>
           </div>
         </>
       )}
     </div>
-  )
-  
+  );
 }

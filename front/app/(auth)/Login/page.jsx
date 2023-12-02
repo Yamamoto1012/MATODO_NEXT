@@ -30,7 +30,7 @@ export default function page() {
       .then((userCredential) => {
         // ログイン成功時の処理
         alert("ログインしました");
-        router.push("/")
+        router.push("/");
       })
       .catch((error) => {
         // ログイン失敗時のエラー処理

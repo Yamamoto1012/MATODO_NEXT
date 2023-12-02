@@ -49,7 +49,7 @@ export default function Page() {
           </h2>
           <div className="w-full h-2.5 bg-[#00ADB5]"></div>
         </div>
-        <div className="w-full max-w-full">
+        <div className="w-full max-w-full space-y-4">
           {tasks.map((task) => (
             <div
               key={task.id}

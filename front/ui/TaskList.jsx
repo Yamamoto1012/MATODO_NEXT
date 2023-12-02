@@ -1,9 +1,15 @@
 // 親コンポーネント
 import React, { useEffect, useState } from "react";
 import { db } from "../app/firebase";
-import { query, collection, onSnapshot, doc, updateDoc } from "firebase/firestore";
-import TaskCard from './TaskCard';
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import {
+  query,
+  collection,
+  onSnapshot,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
+import TaskCard from "./TaskCard";
+import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 
 export default function TaskList() {
   const [tasks, setTasks] = useState([]);

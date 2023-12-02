@@ -1,6 +1,6 @@
 // TaskCard.js
-import React from 'react';
-import { useDraggable } from '@dnd-kit/core';
+import React from "react";
+import { useDraggable } from "@dnd-kit/core";
 
 export default function TaskCard({ task, onCheckboxChange, onCardClick }) {
   const { attributes, listeners, setNodeRef } = useDraggable({
@@ -9,10 +9,10 @@ export default function TaskCard({ task, onCheckboxChange, onCardClick }) {
 
   return (
     <div
-      ref={setNodeRef} 
+      ref={setNodeRef}
       {...listeners}
       {...attributes}
-      className="bg-[#2B2D42] rounded-[15px] shadow-md p-2 mx-1 flex items-center transition duration-500 ease-in-out cursor-pointer"
+      className="bg-[#2B2D42] rounded-3xl shadow-md p-2 mx-2 flex items-center transform transition-transform duration-150 ease-in-out hover:scale-105"
       onClick={() => onCardClick(task)}
     >
       <div className="flex items-center h-4 w-4 ml-2 rounded-full border-none">
