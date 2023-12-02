@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { GoogleLogin } from "./Auth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { GoogleLogin } from "./GoogleAuth";
 
 export default function AuthPage() {
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function AuthPage() {
   return (
     <div className="bg-[#393E4F] h-screen w-screen flex justify-center items-center">
       <div className="bg-white rounded-lg px-12 py-16 w-[500px] h-[462px] shadow-lg flex flex-col items-center space-y-6">
-        <h1 className="text-[54px] font-bold text-gray-800">Eisenhower</h1>
+        <h1 className="text-[54px] font-bold text-gray-800">Matodo</h1>
 
         <button
           className="text-white bg-[#00ADB5] hover:bg-blue-700 font-bold py-3 px-4 rounded w-full transition-transform duration-150 ease-in-out transform hover:scale-105 shadow-xl"

@@ -40,22 +40,3 @@ export function GoogleLogin() {
     </div>
   );
 }
-
-//ログアウト
-export function Logout() {
-  const handleLogout = () => {
-    auth
-      .signOut()
-      .then(() => {
-        alert("ログアウトしました");
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-  };
-  return (
-    <>
-      <button onClick={handleLogout}>ログアウト</button>
-    </>
-  );
-}
