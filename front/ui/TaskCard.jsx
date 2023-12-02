@@ -1,16 +1,19 @@
 import React from "react";
-import { useDraggable } from "@dnd-kit/core";
 
 export default function TaskCard({ task, onCheckboxChange, onCardClick }) {
-  const { attributes, listeners, setNodeRef } = useDraggable({
-    id: task.id,
-  });
+  
+  // 期限が今日または過去の日付かどうかを判断する
+  const isDeadlinePast = () => {
+    const today = new Date();
+    today.setHours(0,0,0,0); // 今日の日付を0時0分0秒0ミリ秒に設定
+    const deadline = new Date(task.deadline);
+    deadline.setHours(0,0,0,0); // 期限の日付を0時0分0秒0ミリ秒に設定
 
+    return deadline <= today; // 期限が今日または過去の場合はtrueを返す
+  }
+  
   return (
     <div
-      ref={setNodeRef}
-      {...listeners}
-      {...attributes}
       className="bg-[#2B2D42] rounded-3xl shadow-md p-2 mx-2 flex items-center transform transition-transform duration-150 ease-in-out hover:scale-105"
       onClick={() => onCardClick(task)}
     >
@@ -25,7 +28,7 @@ export default function TaskCard({ task, onCheckboxChange, onCardClick }) {
       </div>
       <div className="ml-4">
         <p className="text-[14px] font-light text-white">{task.title}</p>
-        <p className="text-[12px] text-red-500">{task.deadline}</p>
+        <p className={`text-[12px] ${isDeadlinePast() ? 'text-red-500' : 'text-blue-500'}`}>{task.deadline}</p>
       </div>
     </div>
   );

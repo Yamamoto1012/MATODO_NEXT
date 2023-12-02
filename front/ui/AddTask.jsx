@@ -67,8 +67,8 @@ export default function AddTask() {
 
   return (
     <div className="bg-[#222831] w-[450px] md:w-[600px] lg:w-[800px] h-14 md:h-[60px] rounded-full outline outline-white outline-1 ">
-      <div className="flex flex-row items-center text-[#00ADB5] ">
-        <div className="flex my-[17px] ml-3">
+      <div className="flex flex-row items-center text-[#00ADB5]">
+        <div className="flex my-[17px] ml-3 transition-transform duration-150 ease-in-out transform hover:scale-105 shadow-xl">
           <div className="w-[25px] h-[25px]">
             <CreateOutlinedIcon />
           </div>
