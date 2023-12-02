@@ -23,7 +23,6 @@ def kamoku_info():
         if unit not in data:
             data.append(unit)
 
-    
     return data
 
 
@@ -39,13 +38,9 @@ def enter_kamoku():
     #m_res = session.post(request_url, data=kamoku_info)
     m_res = session.post(request_url, params=kamoku_info, verify=False)
     
-    # エラーチェック：HTTPエラーステータスがあれば例外を発生させる
-    m_res.raise_for_status()
-
     return m_res
 
 
-#メイン関数
 def main_scrape():
     
     #2 環境変数の呼び出し
@@ -80,9 +75,6 @@ def main_scrape():
     
     time.sleep(1)
 
-    # エラーチェック：HTTPエラーステータスがあれば例外を発生させる
-    #res.raise_for_status()
-    
 
     #履修中の科目情報を取得する関数呼びだし
     #data = kamoku_info()
@@ -96,14 +88,10 @@ def main_scrape():
     return data2.text
 
 
-
 @app.route("/")
 def index():
-    # 例: スクレイピング処理を呼び出して結果を表示
-    url_to_scrape = "https://example.com"
-    result = scrape_gakupo(url_to_scrape)
     
-    return f"Index page\n{result}"
+    return 
 
 if __name__ == "__main__":
     app.run(debug=True)
