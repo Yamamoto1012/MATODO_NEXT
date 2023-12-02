@@ -30,7 +30,7 @@ export default function TaskList() {
       querySnapshot.forEach((doc) => {
         tasksArr.push({ ...doc.data(), id: doc.id });
       });
-      //isDoneを表示しない様にする
+      //isDoneがtrueのものを表示しない様にする
       tasksArr = tasksArr.filter((task) => task.isDone === false);
       setTasks(tasksArr);
     });
