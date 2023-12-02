@@ -2,13 +2,14 @@
 import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { auth } from "../../firebase";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 //既存のユーザーでログイン
 export default function page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -29,6 +30,7 @@ export default function page() {
       .then((userCredential) => {
         // ログイン成功時の処理
         alert("ログインしました");
+        router.push("/")
       })
       .catch((error) => {
         // ログイン失敗時のエラー処理
@@ -86,7 +88,7 @@ export default function page() {
           type="submit"
           className="w-full bg-[#00ADB5] text-white font-bold py-2 px-4 rounded-xl transition-transform duration-150 ease-in-out transform hover:scale-105"
         >
-          <Link href={"/"}>ログイン</Link>
+          ログイン
         </button>
       </form>
       {error && <p className="text-red-500 text-center mt-4">{error}</p>}
