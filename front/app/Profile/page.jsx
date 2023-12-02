@@ -35,6 +35,7 @@ export default function ProfilePage() {
 
   const handleSignOut = () => {
     auth.signOut();
+    router.push("/Auth")
   };
 
   const handleLogin = () => {
