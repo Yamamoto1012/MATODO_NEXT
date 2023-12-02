@@ -21,9 +21,9 @@ export default function AddTask() {
   };
 
   const description = null;
-  const importance = null;
+  const importance = "high";
   const isDone = false;
-  const urgency = null;
+  const urgency = "high";
 
   const changeText = (e) => {
     setText(e.target.value);
