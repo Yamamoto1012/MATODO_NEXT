@@ -9,25 +9,28 @@ export function MatrixArea() {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    const fetchTasks = async () => {
-      if(auth.currentUser) {
-        const userId = auth.currentUser.uid; // ログインしているユーザーのIDを取得
-        const tasksCollectionRef = collection(db, "tasks");
-        const q = query(
-          tasksCollectionRef, 
-          where("userId", "==", userId), // ユーザーIDに基づくフィルタリング
-          where("isDone", "==", false) // isDoneがfalseのもののみ取得
-        );
-        const querySnapshot = await getDocs(q);
-        const tasksData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setTasks(tasksData);
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        const fetchTasks = async () => {
+          const tasksCollectionRef = collection(db, "tasks");
+          const q = query(
+            tasksCollectionRef,
+            where("userId", "==", user.uid), // ユーザーIDに基づくフィルタリング
+            where("isDone", "==", false) // isDoneがfalseのもののみ取得
+          );
+          const querySnapshot = await getDocs(q);
+          const tasksData = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setTasks(tasksData);
+        };
+  
+        fetchTasks();
       }
-    };
-    fetchTasks();
-  }, [auth.currentUser]); 
+    });
+    return () => unsubscribe();
+  }, []);
 
   // タスクをそれぞれのカテゴリに分ける
   const urgentImportantTasks = tasks.filter(
