@@ -43,7 +43,7 @@ export default function ProfilePage() {
   }
 
   const handleHome = () => {
-    router.push("/")
+    router.push("/Home")
   }
 
   return (

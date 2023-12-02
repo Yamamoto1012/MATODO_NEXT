@@ -52,13 +52,18 @@ export default function Page() {
   // コンポーネントのレンダリング部分
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
-      <h2 className="text-4xl font-bold text-[#00ADB5] mb-6">プロフィール作成</h2>
+      <h2 className="text-4xl font-bold text-[#00ADB5] mb-6">
+        プロフィール作成
+      </h2>
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-2xl shadow-lg max-w-lg w-full mx-4"
       >
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-medium mb-1" htmlFor="name">
+          <label
+            className="block text-gray-700 text-sm font-medium mb-1"
+            htmlFor="name"
+          >
             ユーザー名 <span className="text-red-500">*</span>
           </label>
           <input
@@ -73,7 +78,10 @@ export default function Page() {
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-medium mb-1" htmlFor="position">
+          <label
+            className="block text-gray-700 text-sm font-medium mb-1"
+            htmlFor="position"
+          >
             役職 <span className="text-red-500">*</span>
           </label>
           <input
@@ -88,7 +96,10 @@ export default function Page() {
         </div>
 
         <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-medium mb-1" htmlFor="icon">
+          <label
+            className="block text-gray-700 text-sm font-medium mb-1"
+            htmlFor="icon"
+          >
             アイコン <span className="text-red-500">*</span>
           </label>
           <div className="flex items-center">

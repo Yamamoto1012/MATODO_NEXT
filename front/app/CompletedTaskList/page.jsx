@@ -25,7 +25,7 @@ export default function Page() {
         where("userId", "==", userId),
         where("isDone", "==", true)
       );
-  
+
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const tasksData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
@@ -33,12 +33,12 @@ export default function Page() {
         }));
         setTasks(tasksData);
       });
-  
+
       // コンポーネントのアンマウント時にリスナーを解除
       return () => unsubscribe();
     }
   }, [auth.currentUser]);
-  
+
   const revertTask = async (taskId) => {
     const taskDocRef = doc(db, "tasks", taskId);
     await updateDoc(taskDocRef, {
@@ -46,7 +46,6 @@ export default function Page() {
     });
     // データの更新は onSnapshot によって自動的に処理されるので、fetchTasks を呼び出す必要はありません。
   };
-  
 
   return (
     <div className="flex h-screen bg-gray-800 text-white">

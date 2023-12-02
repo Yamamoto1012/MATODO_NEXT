@@ -5,7 +5,6 @@ import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
 
-
 //Googleアカウントでログイン
 export function GoogleLogin() {
   const provider = new GoogleAuthProvider();

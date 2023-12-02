@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './NicoNico.css'; // CSSファイルをインポート
+import './NicoNico.css';
 
 export default function NicoNico({ comment }) {
   const [show, setShow] = useState(false);

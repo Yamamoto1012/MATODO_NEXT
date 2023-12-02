@@ -19,13 +19,13 @@ export function MatrixArea() {
             where("isDone", "==", false) // isDoneがfalseのもののみ取得
           );
           const querySnapshot = await getDocs(q);
-          const tasksData = querySnapshot.docs.map(doc => ({
+          const tasksData = querySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
           }));
           setTasks(tasksData);
         };
-  
+
         fetchTasks();
       }
     });
@@ -47,7 +47,7 @@ export function MatrixArea() {
   );
   const handleReload = () => {
     window.location.reload();
-  }
+  };
 
   return (
     <div className="grid grid-cols-2 grid-rows-2 gap-4 p-6 mx-auto mt-12 rounded-xl shadow-xl w-[600px] h-[400px] md:w-[725px] md:h-[525px] lg:w-[800px] lg:h-[600px]">
@@ -83,7 +83,7 @@ export function MatrixArea() {
             {task.title}
           </div>
         ))}
-      </div>  
+      </div>
 
       {/* 緊急でも重要でもない */}
       <div className="bg-gradient-to-tr from-gray-500 to-gray-300 flex flex-col justify-center items-center rounded-lg shadow-md overflow-y-auto p-2 transform transition-transform duration-300 ease-in-out hover:scale-105">
@@ -114,7 +114,6 @@ export function MatrixArea() {
           </div>
         ))}
       </div>
-
     </div>
   );
 }

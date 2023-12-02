@@ -1,4 +1,3 @@
-// 親コンポーネント
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import NicoNico from "./NicoNico";
@@ -52,7 +51,7 @@ export default function TaskList() {
           where("userId", "==", user.uid),
           where("isDone", "==", false)
         );
-  
+
         const unsubscribeTasks = onSnapshot(q, (querySnapshot) => {
           const tasksArr = querySnapshot.docs.map((doc) => ({
             id: doc.id,
@@ -60,15 +59,15 @@ export default function TaskList() {
           }));
           setTasks(tasksArr);
         });
-  
+
         // タスクのリスナーの解除
         return () => unsubscribeTasks();
       }
     });
-  
+
     // 認証状態のリスナーの解除
     return () => unsubscribe();
-  }, []);  
+  }, []);
 
   const handleChange = async (e, taskId, isDone) => {
     e.stopPropagation(); // 親要素に伝達しない様にする。

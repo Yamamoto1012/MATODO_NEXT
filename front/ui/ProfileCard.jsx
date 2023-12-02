@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { auth, db } from "../app/firebase"; // 適切なパスに修正してください
+import { auth, db } from "../app/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import Link from "next/link";
@@ -40,22 +40,20 @@ export default function ProfileCard() {
         <div className="flex items-center space-x-4">
           <div className="flex-shrink-0">
             <Link href="/Profile">
-                <Image
-                  src={user.iconUrl || "/default-icon.svg"}
-                  width={45}
-                  height={45}
-                  className="rounded-full"
-                  alt="User Icon"
-                />
+              <Image
+                src={user.iconUrl || "/default-icon.svg"}
+                width={45}
+                height={45}
+                className="rounded-full"
+                alt="User Icon"
+              />
             </Link>
           </div>
           <div className="flex flex-col justify-center">
             <span className="text-base text-white font-semibold">
               {user.name}
             </span>
-            <span className="text-sm text-gray-300">
-              {user.position}
-            </span>
+            <span className="text-sm text-gray-300">{user.position}</span>
           </div>
         </div>
       )}
