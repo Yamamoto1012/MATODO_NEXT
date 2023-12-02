@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import NicoNico from "./NicoNico";
-import { db } from "../app/firebase";
+import { auth, db } from "../app/firebase";
 import {
   query,
   collection,
@@ -10,6 +10,7 @@ import {
   doc,
   updateDoc,
   deleteDoc,
+  where,
 } from "firebase/firestore";
 import DatePicker from "react-datepicker";
 import TaskCard from "./TaskCard";
@@ -24,18 +25,23 @@ export default function TaskList() {
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
-    const q = query(collection(db, "tasks"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      let tasksArr = [];
-      querySnapshot.forEach((doc) => {
-        tasksArr.push({ ...doc.data(), id: doc.id });
+    if (auth.currentUser) {
+      const userId = auth.currentUser.uid; // ログインしているユーザーのIDを取得
+      const q = query(
+        collection(db, "tasks"),
+        where("userId", "==", userId), // ユーザーIDに基づくフィルタリング
+        where("isDone", "==", false) // isDoneがfalseのもののみ取得
+      );
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        let tasksArr = [];
+        querySnapshot.forEach((doc) => {
+          tasksArr.push({ ...doc.data(), id: doc.id });
+        });
+        setTasks(tasksArr);
       });
-      //isDoneがtrueのものを表示しない様にする
-      tasksArr = tasksArr.filter((task) => task.isDone === false);
-      setTasks(tasksArr);
-    });
-    return () => unsubscribe();
-  }, []);
+      return () => unsubscribe();
+    }
+  }, [auth.currentUser]);
 
   const handleChange = async (e, taskId, isDone) => {
     e.stopPropagation(); // 親要素に伝達しない様にする。

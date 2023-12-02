@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { db } from "../app/firebase";
+import { auth, db } from "../app/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { Cached } from "@mui/icons-material";
 
@@ -10,17 +10,24 @@ export function MatrixArea() {
 
   useEffect(() => {
     const fetchTasks = async () => {
-      const tasksCollectionRef = collection(db, "tasks");
-      const q = query(tasksCollectionRef, where("isDone", "==", false)); // isDoneがfalseのもののみ取得
-      const querySnapshot = await getDocs(q);
-      const tasksData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setTasks(tasksData);
+      if(auth.currentUser) {
+        const userId = auth.currentUser.uid; // ログインしているユーザーのIDを取得
+        const tasksCollectionRef = collection(db, "tasks");
+        const q = query(
+          tasksCollectionRef, 
+          where("userId", "==", userId), // ユーザーIDに基づくフィルタリング
+          where("isDone", "==", false) // isDoneがfalseのもののみ取得
+        );
+        const querySnapshot = await getDocs(q);
+        const tasksData = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setTasks(tasksData);
+      }
     };
     fetchTasks();
-  }, []);
+  }, [auth.currentUser]); 
 
   // タスクをそれぞれのカテゴリに分ける
   const urgentImportantTasks = tasks.filter(

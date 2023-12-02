@@ -39,7 +39,7 @@ export default function AuthPage() {
       </div>
       <Link href="https://ja.wikipedia.org/wiki/%E3%83%89%E3%83%AF%E3%82%A4%E3%83%88%E3%83%BBD%E3%83%BB%E3%82%A2%E3%82%A4%E3%82%BC%E3%83%B3%E3%83%8F%E3%83%AF%E3%83%BC">
         <Image
-          src="/hower.jpeg"
+          src="/Hower.jpeg"
           width={325}
           height={325}
           alt="Google"
