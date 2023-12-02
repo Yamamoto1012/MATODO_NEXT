@@ -20,6 +20,7 @@
     "firebase": "^10.6.0",
     "next": "14.0.3",
     "react": "^18",
+    "react-datepicker": "^4.24.0",
     "react-dom": "^18"
   },
   "devDependencies": {
