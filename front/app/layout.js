@@ -16,7 +16,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ja">
-      <body className={roboto.className}>
+      <body className={`${roboto.className}, bg-[#222831]`}>
         {children}
       </body>
     </html>
