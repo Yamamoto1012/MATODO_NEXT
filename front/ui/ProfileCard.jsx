@@ -35,27 +35,29 @@ export default function ProfileCard() {
   }, []);
 
   return (
-    <div className="w-full h-14 flex items-center space-x-2 bg-[#222831] p-1 rounded-lg shadow-lg transform transition-transform duration-150 ease-in-out hover:scale-125">
+    <div className="bg-[#2B2D42] p-1 rounded-2xl shadow-2xl transform transition-transform duration-300 ease-in-out hover:scale-105">
       {user && (
-        <>
-          <div className="shrink-0 h-14 items-center justify-center flex">
+        <div className="flex items-center space-x-4">
+          <div className="flex-shrink-0">
             <Link href="/Profile">
-              <Image
-                src={user.iconUrl || "./default-icon.svg"}
-                width={45}
-                height={45}
-                className="w-11 h-11 rounded-full transform transition-transform duration-150 ease-in-out hover:scale-125"
-                alt="User Icon"
-              />
+                <Image
+                  src={user.iconUrl || "/default-icon.svg"}
+                  width={45}
+                  height={45}
+                  className="rounded-full"
+                  alt="User Icon"
+                />
             </Link>
           </div>
-          <div className="h-15 w-full flex flex-col">
-            <div className="text-[#EEEEEE] text-base font-normal">
+          <div className="flex flex-col justify-center">
+            <span className="text-base text-white font-semibold">
               {user.name}
-            </div>
-            <div className="text-[#78858F] text-sm">{user.position}</div>
+            </span>
+            <span className="text-sm text-gray-300">
+              {user.position}
+            </span>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

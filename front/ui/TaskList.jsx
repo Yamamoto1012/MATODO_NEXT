@@ -8,6 +8,7 @@ import {
   onSnapshot,
   doc,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import DatePicker from "react-datepicker";
 import TaskCard from "./TaskCard";
@@ -43,7 +44,7 @@ export default function TaskList() {
     });
   };
 
-  const handleMemoChange = async(e) => {
+  const handleMemoChange = async (e) => {
     e.preventDefault();
     const memo = e.target.memo.value; // フォームからメモを取得
     if (selectedTask) {
@@ -53,10 +54,10 @@ export default function TaskList() {
       });
       setSelectedTask({ ...selectedTask, memo: memo });
     }
-  }
+  };
 
   const handleDateChange = (date) => {
-    setSelectedDate(date); // 選択された日付をローカルステートに設定
+    setSelectedDate(date);
     if (selectedTask) {
       const taskRef = doc(db, "tasks", selectedTask.id);
       updateDoc(taskRef, {
@@ -69,6 +70,18 @@ export default function TaskList() {
     }
   };
 
+  const handleTitleChange = async(e) => {
+    e.preventDefault();
+    const title = e.target.title.value;
+    if (selectedTask) {
+      const taskRef = doc(db, "tasks", selectedTask.id);
+      updateDoc(taskRef, {
+        title: title,
+      });
+      setSelectedTask({ ...selectedTask, title: title });
+    }
+  }
+
   const handleTaskCardClick = (task) => {
     setSelectedTask(task);
     setSelectedDate(new Date(task.deadline));
@@ -80,9 +93,18 @@ export default function TaskList() {
     setShowSidebar(false);
   };
 
+  //タスクをtasksテーブルから削除する
+  const handleDelete = async () => {
+    const taskRef = doc(db, "tasks", selectedTask.id);
+    await deleteDoc(taskRef);
+    setShowSidebar(false);
+    setSelectedTask(null); 
+  }
+
   return (
     <>
-      <div className="space-y-4">
+      <div className="space-y-3">
+        {/* Task cards map */}
         {tasks.map((task) => (
           <TaskCard
             key={task.id}
@@ -92,51 +114,82 @@ export default function TaskList() {
           />
         ))}
       </div>
-      {/* サイドバー関連のコード... */}
+
+      {/* Sidebar */}
       {showSidebar && selectedTask && (
         <div
-          className={`fixed inset-y-0 right-0 w-72 bg-gradient-to-b from-[#393E4F] to-[#222831] shadow-xl p-6 z-50 transform transition-transform duration-500 ease-in-out ${
+          className={`fixed inset-y-0 right-0 w-80 bg-[#1F1F1F] shadow-2xl p-8 z-50 transform transition-transform duration-300 ease-in-out ${
             showSidebar ? "translate-x-0" : "translate-x-full"
           }`}
+          style={{ boxShadow: '4px 0 15px rgba(0, 0, 0, .5)' }}
         >
           <button
             onClick={closeSidebar}
-            className="absolute top-6 right-6 text-white hover:text-[#00ADB5] focus:outline-none"
+            className="text-white rounded-full p-2 hover:bg-[#333333] focus:outline-none absolute top-4 right-4"
           >
             <CloseIcon fontSize="large" />
           </button>
 
-          <div className="flex flex-col items-center pt-16 pb-4">
-            <div className="bg-[#222831] p-4 w-full rounded-2xl shadow-lg mb-6">
-              <h3 className="text-lg text-[#00ADB5]">タスク名</h3>
-              <h3 className="text-2xl font-bold text-white">
-                {selectedTask.title}
-              </h3>
+          <div className="flex flex-col items-start justify-between h-full">
+            <div className="w-full">
+              {/* Task title */}
+              <form onSubmit={handleTitleChange} className="space-y-4">
+                <h3 className="text-lg font-semibold text-[#00ADB5]">タスク名</h3>
+                <input
+                  name="title"
+                  type="text"
+                  className="w-full bg-[#2A2A2A] text-xl font-bold text-white rounded-lg p-4 outline-none border border-transparent focus:border-[#00ADB5]"
+                  defaultValue={selectedTask.title}
+                />
+                <button
+                  type="submit"
+                  className="w-full bg-[#00ADB5] text-white rounded-lg p-2 hover:bg-[#008a9e] transform transition-transform duration-150 ease-in-out hover:scale-105"
+                >
+                  更新
+                </button>
+              </form>
             </div>
 
-            <div className="flex items-center w-full p-4 rounded-2xl bg-[#222831] shadow-inner transform transition-transform duration-150 ease-in-out hover:scale-105">
+            {/* Task date */}
+            <div className="w-full mt-6">
               <CalendarMonthOutlinedIcon className="text-[#00ADB5]" />
               <DatePicker
                 selected={selectedDate}
                 onChange={handleDateChange}
                 dateFormat="yyyy/MM/dd"
-                className="text-center bg-transparent border-none text-white cursor-pointer outline-none"
+                wrapperClassName="date-picker"
+                className="w-full bg-[#2A2A2A] text-center text-white rounded-lg p-4 outline-none border border-transparent focus:border-[#00ADB5]"
+                popperClassName="react-datepicker-right"
               />
             </div>
 
-            <div className="flex flex-col w-full p-4 mt-6 bg-[#222831] rounded-2xl">
-              <p className="my-1">
-                メモ
-              </p>
-              <div>
-                <form onSubmit={handleMemoChange}>
-                  <textarea name="memo" className="w-full p-2 h-44 rounded-2xl text-[#222831] transform transition-transform duration-150 ease-in-out hover:scale-105" defaultValue={selectedTask.memo || ""}/>
-                  <button type="submit" className="mt-2 px-4 py-2 bg-[#00ADB5] rounded-2xl transform transition-transform duration-150 ease-in-out hover:scale-105">保存</button>
-                </form>
-              </div>
+            {/* Task memo */}
+            <div className="w-full mt-6">
+              <p className="text-lg font-semibold text-white">メモ</p>
+              <form onSubmit={handleMemoChange}>
+                <textarea
+                  name="memo"
+                  className="w-full bg-[#2A2A2A] text-white rounded-lg p-4 h-40 outline-none border border-transparent focus:border-[#00ADB5]"
+                  defaultValue={selectedTask.memo || ""}
+                />
+                <button
+                  type="submit"
+                  className="w-full bg-[#00ADB5] text-white rounded-lg p-2 mt-4 hover:bg-[#008a9e] transform transition-transform duration-150 ease-in-out hover:scale-105"
+                >
+                  保存
+                </button>
+              </form>
             </div>
 
-            {/* タスク別のリストに追加 */}
+            {/* Delete task */}
+            <div className="w-full mt-6">
+              <button
+                onClick={handleDelete}
+                className="w-full bg-[#FF6B6B] text-white rounded-lg p-2 hover:bg-[#e63946] transform transition-transform duration-150 ease-in-out hover:scale-105"
+              >
+                タスク削除
+              </button>
+            </div>
           </div>
         </div>
       )}
