@@ -35,7 +35,7 @@ export default function ProfileCard() {
   }, []);
 
   return (
-    <div className=" w-full h-14 flex items-center space-x-2 border bg-[#222831] p-1 rounded-lg shadow-lg transform transition-transform duration-150 ease-in-out hover:scale-125">
+    <div className="w-full h-14 flex items-center space-x-2 bg-[#222831] p-1 rounded-lg shadow-lg transform transition-transform duration-150 ease-in-out hover:scale-125">
       {user && (
         <>
           <div className="shrink-0 h-14 items-center justify-center flex">
@@ -44,7 +44,7 @@ export default function ProfileCard() {
                 src={user.iconUrl || "./default-icon.svg"}
                 width={45}
                 height={45}
-                className="w-11 h-11 rounded-full border-2 border-[#BDAE93] transform transition-transform duration-150 ease-in-out hover:scale-125"
+                className="w-11 h-11 rounded-full transform transition-transform duration-150 ease-in-out hover:scale-125"
                 alt="User Icon"
               />
             </Link>

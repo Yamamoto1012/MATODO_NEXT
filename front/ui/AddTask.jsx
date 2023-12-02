@@ -68,17 +68,19 @@ export default function AddTask() {
   return (
     <div className="bg-[#222831] w-[450px] md:w-[600px] lg:w-[800px] h-14 md:h-[60px] rounded-full outline outline-white outline-1 ">
       <div className="flex flex-row items-center text-[#00ADB5] ">
-        <div className="w-[25px] h-[25px] ml-3 mr-2 my-5">
-          <CreateOutlinedIcon />
+        <div className="flex my-[17px] ml-3">
+          <div className="w-[25px] h-[25px]">
+            <CreateOutlinedIcon />
+          </div>
+          <input
+            type="text"
+            placeholder="タスクを入力"
+            value={text}
+            onChange={changeText}
+            onKeyDown={handleKeyDown}
+            className="w-full max-w-xs md:max-w-md lg:max-w-lg bg-[#222831] h-auto outline-none placeholder-[#00ADB5] text-base ml-2"
+          />
         </div>
-        <input
-          type="text"
-          placeholder="タスクを入力"
-          value={text}
-          onChange={changeText}
-          onKeyDown={handleKeyDown}
-          className="w-full max-w-xs md:max-w-md lg:max-w-lg bg-[#222831] h-auto outline-none placeholder-[#00ADB5] text-base"
-        />
       </div>
     </div>
   );

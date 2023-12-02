@@ -6,16 +6,16 @@ import CompletedTaskButton from "./CompletedTaskButton";
 
 function SideBar() {
   return (
-    <div className="p-4">
-      <div className="w-60 bg-[#393E4F] rounded-2xl shadow-xl h-[95vh] flex flex-col">
+    <div className="p-6">
+      <div className="w-60 bg-[#393E4F] rounded-2xl shadow-2xl h-[95vh] flex flex-col">
         <div className="w-full h-48 flex items-center justify-center">
           <Days />
         </div>
 
-        <div className="w-full flex-grow overflow-auto">
+        <div className="w-full flex-grow overflow-auto ">
           <TaskList />
         </div>
-        <div>
+        <div className="w-auto h-auto">
           <CompletedTaskButton />
         </div>
         <div className="w-full p-4">
