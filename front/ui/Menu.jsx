@@ -3,6 +3,7 @@ import Days from "./Days";
 import ProfileCard from "./ProfileCard";
 import TaskList from "./TaskList";
 import CompletedTaskButton from "./CompletedTaskButton";
+import ScrapingButton from "./ScrapingButton";
 
 function Menu() {
   return (
@@ -15,7 +16,10 @@ function Menu() {
         <div className="w-full flex-grow overflow-auto ">
           <TaskList />
         </div>
-        <div className="w-auto h-auto">
+        <div>
+          <ScrapingButton />
+        </div>
+        <div>
           <CompletedTaskButton />
         </div>
         <div className="w-full p-4">
