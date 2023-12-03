@@ -15,7 +15,14 @@ export default function page() {
   //　登録ボタンを押した時の処理
   const handlerRegister = (e) => {
     e.preventDefault();
-    createUserWithEmailAndPassword(auth, email, password)
+
+    // パスワードが8文字未満の場合はエラー
+    if (password.length < 8) {
+      setError("パスワードは半角英数8文字以上で入力してください");
+      return;
+    } else {
+
+      createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // サインイン
         const user = userCredential.user;
@@ -24,6 +31,8 @@ export default function page() {
       .catch((error) => {
         setError(error.message);
       });
+    }
+
   };
 
   return (
@@ -50,14 +59,14 @@ export default function page() {
 
         <div className="mb-4 pt-4">
           <div className="flex items-center h-4 w-full">
-            <p className="text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+            <p className="text-gray-700 text-sm font-bold mb-2" htmlFor="password">
               パスワード
             </p>
             <p className="text-red-500 text-[12px] mb-2">(必須)</p>
           </div>
 
           <p className="text-[12px] text-red-500">
-            パスワードは半角英数16文字以上で入力してください
+            パスワードは半角英数8文字以上で入力してください
           </p>
 
           <input
@@ -65,6 +74,7 @@ export default function page() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
+            minlength="8"
             placeholder="12345678"
           />
         </div>
