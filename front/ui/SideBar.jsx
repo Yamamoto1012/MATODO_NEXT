@@ -1,9 +1,13 @@
 import React from 'react'
 import Days from './Days'
 import ProfileCard from './ProfileCard'
-import TaskList from './TaskList'
+import SortableTaskList from './SortableTaskList'
 
-function SideBar() {
+function SideBar({
+  id,
+  tasks,
+  label,
+}) {
   return (
     <div className='p-4'>
         <div className='w-60 bg-[#393E4F] rounded-2xl shadow-xl h-[95vh] flex flex-col'>
@@ -12,7 +16,11 @@ function SideBar() {
           </div>
 
           <div className='w-full flex-grow overflow-auto'>
-            <TaskList />
+            <SortableTaskList 
+              id={id}
+              items={tasks}
+              label={label}
+            />
           </div>
           <div className='w-full p-4'>
             <ProfileCard />

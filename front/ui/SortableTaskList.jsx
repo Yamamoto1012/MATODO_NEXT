@@ -2,10 +2,20 @@
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../app/firebase";
 import { query, collection, onSnapshot, doc, updateDoc } from "firebase/firestore";
-import TaskCard from './TaskCard';
+import SortableTaskCard from './SortableTaskCard';
+import { useDroppable } from "@dnd-kit/core";
+import {SortableContext, rectSortingStrategy} from '@dnd-kit/sortable'
 
-export default function TaskList() {
-  const [tasks, setTasks] = useState([]);
+export default function SortableTaskList({
+  id,
+  items,
+  label,
+}) {
+  //ドラッグ可能  
+  const { setNodeRef } = useDroppable({
+    id,
+  });
+  const [tasks, setTasks] = useState(["A"]);
   const [selectedTask, setSelectedTask] = useState(null);
   const [showSidebar, setShowSidebar] = useState(false);
 
@@ -42,9 +52,10 @@ export default function TaskList() {
     setShowSidebar(false);
   };
 
+
   return (
     <>
-      <div className="space-y-4">
+      {/* <div className="space-y-4">
         {tasks.map((task) => (
           <TaskCard
             key={task.id}
@@ -52,8 +63,18 @@ export default function TaskList() {
             onCheckboxChange={handleChange}
             onCardClick={handleTaskCardClick}
           />
-        ))}
+        ))} */}
+
+      <div className="space-y-4">
+        <SortableContext id={id} items={items} strategy={rectSortingStrategy}>
+          <div ref={setNodeRef}> 
+            {items.map((id) =>(
+              <SortableTaskCard key={id} id={id} />
+            ))}
+          </div>
+        </SortableContext>
       </div>
+
       {/* サイドバー関連のコード... */}
       {showSidebar && selectedTask && (
         <div
