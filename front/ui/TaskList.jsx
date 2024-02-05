@@ -116,6 +116,33 @@ export default function TaskList() {
               dateFormat="yyyy/MM/dd"
               className="text-center text-white bg-[#2A2A2A] rounded-lg p-4 outline-none border border-transparent focus:border-[#00ADB5]"
             />
+
+            <div className="flex items-center space-x-2">
+              <p className="text-white">緊急度</p>
+              <select
+                name="urgency"
+                value={selectedTask.urgency || ""}
+                onChange={handleInputChange}
+                className="text-white bg-[#2A2A2A] rounded-lg p-2 outline-none border border-transparent focus:border-[#00ADB5]"
+              >
+                <option value="low">低</option>
+                <option value="high">高</option>
+              </select>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <p className="text-white">重要度</p>
+              <select
+                name="importance"
+                value={selectedTask.importance || ""}
+                onChange={handleInputChange}
+                className="text-white bg-[#2A2A2A] rounded-lg p-2 outline-none border border-transparent focus:border-[#00ADB5]"
+              >
+                <option value="low">低</option>
+                <option value="high">高</option>
+              </select>
+            </div>
+            
             <button
               onClick={handleUpdate}
               className="bg-[#00ADB5] text-white rounded-lg p-2 hover:bg-[#008a9e]"
