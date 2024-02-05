@@ -7,10 +7,11 @@ import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp"; // 追加
 
 function TaskCategory({ title, tasks, bgColorFrom, bgColorTo }) {
   const [showAll, setShowAll] = useState(false);
-
+  const gradientClass = `bg-gradient-to-tr from-${bgColorFrom} to-${bgColorTo}`;
+  
   return (
     <div
-      className={`bg-gradient-to-tr from-${bgColorFrom} to-${bgColorTo} flex flex-col justify-center items-center rounded-lg shadow-md overflow-hidden p-2 transform transition-transform duration-300 ease-in-out hover:scale-105`}
+      className={`${gradientClass} flex flex-col justify-center items-center rounded-lg shadow-md overflow-hidden p-2 `}
     >
       <p className="text-white text-2xl font-semibold mb-2">{title}</p>
       {tasks.slice(0, showAll ? tasks.length : 4).map((task) => (
@@ -94,9 +95,16 @@ export function MatrixArea() {
       bgColorTo: "blue-300",
     },
   ];
+    
+  const gradientClasses = {
+    "緊急ではないが重要": "bg-gradient-to-tr from-green-500 to-green-300",
+    "緊急で重要": "bg-gradient-to-tr from-red-500 to-pink-400",
+    "緊急でも重要でもない": "bg-gradient-to-tr from-gray-500 to-gray-300",
+    "緊急だが重要ではない": "bg-gradient-to-tr from-blue-500 to-blue-300",
+  };
 
   return (
-    <div className="grid grid-cols-2 grid-rows-2 gap-4 p-6 mx-auto mt-12 rounded-xl shadow-xl w-[600px] h-auto md:w-[725px] lg:w-[800px]">
+    <div className={`${gradientClasses} grid grid-cols-2 grid-rows-2 gap-4 p-6 mx-auto mt-12 rounded-xl shadow-xl w-[600px] h-auto md:w-[725px] lg:w-[800px]`}>
       <button
         onClick={() => window.location.reload()}
         className="absolute top-5 left-5 bg-gray-200 p-2 rounded-full shadow hover:bg-gray-300"
