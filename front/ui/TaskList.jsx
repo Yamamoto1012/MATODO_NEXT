@@ -24,34 +24,41 @@ export default function TaskList() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [comments, setComments] = useState([]);
 
-  // データ取得ロジックを関数化
-  const fetchTasks = async () => {
-    if (auth.currentUser) {
-      const userId = auth.currentUser.uid;
-      const q = query(
-        collection(db, "tasks"),
-        where("userId", "==", userId),
-        where("isDone", "==", false)
-      );
-
+  const fetchTasks = async (userId) => {
+    // userIdがundefinedの場合は、処理を実行しない
+    if (!userId) {
+      console.error("userId is undefined");
+      return;
+    }
+    
+    const q = query(
+      collection(db, "tasks"),
+      where("userId", "==", userId),
+      where("isDone", "==", false)
+    );
+    
+    try {
       const querySnapshot = await getDocs(q);
-      const tasksArr = querySnapshot.docs.map((doc) => ({
+      const tasksArr = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
       }));
       setTasks(tasksArr);
+    } catch (error) {
+      console.error("Failed to fetch tasks:", error);
     }
   };
+  
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
+      if (user && user.uid) {
+        fetchTasks(user.uid);
         const q = query(
           collection(db, "tasks"),
           where("userId", "==", user.uid),
           where("isDone", "==", false)
         );
-
         const unsubscribeTasks = onSnapshot(q, (querySnapshot) => {
           const tasksArr = querySnapshot.docs.map((doc) => ({
             id: doc.id,
@@ -59,15 +66,18 @@ export default function TaskList() {
           }));
           setTasks(tasksArr);
         });
-
-        // タスクのリスナーの解除
         return () => unsubscribeTasks();
       }
     });
-
-    // 認証状態のリスナーの解除
     return () => unsubscribe();
   }, []);
+
+  const updateTask = async (taskId, changes) => {
+    const taskRef = doc(db, "tasks", taskId);
+    await updateDoc(taskRef, changes);
+    setComments(`${selectedTask?.title}が更新されました`);
+    fetchTasks(auth.currentUser?.uid);
+  };
 
   const handleChange = async (e, taskId, isDone) => {
     e.stopPropagation(); // 親要素に伝達しない様にする。
@@ -172,7 +182,6 @@ export default function TaskList() {
   return (
     <>
       <div className="space-y-3">
-        {/* Task cards map */}
         {tasks.map((task) => (
           <TaskCard
             key={task.id}
