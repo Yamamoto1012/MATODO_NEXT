@@ -1,4 +1,3 @@
-"use client";
 import React, { useState } from "react";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import { doc, setDoc } from "firebase/firestore";
@@ -6,15 +5,14 @@ import { auth, db } from "../app/firebase";
 
 export default function AddTask() {
   const [text, setText] = useState("");
+  const [isComposing, setIsComposing] = useState(false); // 変換状態を追跡するための状態
 
-  // 日付をYYYY-MM-DD形式でフォーマット
   const formatTodayDate = () => {
+    // 日付をYYYY-MM-DD形式でフォーマットする関数
     const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth() + 1;
-    const date = today.getDate();
-
-    return `${year}-${month.toString().padStart(2, '0')}-${date.toString().padStart(2, '0')}`;
+    return `${today.getFullYear()}-${(today.getMonth() + 1)
+      .toString()
+      .padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
   };
 
   const createNewTask = () => {
@@ -23,7 +21,7 @@ export default function AddTask() {
     const newTask = {
       userId: auth.currentUser.uid,
       title: text,
-      description: null, // 説明は常にnull
+      description: null,
       importance: "high",
       isDone: false,
       urgency: "high",
@@ -35,7 +33,7 @@ export default function AddTask() {
   const changeText = (e) => setText(e.target.value);
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.isComposing) {
+    if (e.key === "Enter" && !isComposing) {
       const newTask = createNewTask();
       if (newTask) {
         setDoc(doc(db, "tasks", newTask.title), newTask);
@@ -44,6 +42,16 @@ export default function AddTask() {
     } else if (e.key === "Escape") {
       setText("");
     }
+  };
+
+  // IME変換が開始された時のイベント
+  const handleCompositionStart = () => {
+    setIsComposing(true);
+  };
+
+  // IME変換が終了した時のイベント
+  const handleCompositionEnd = () => {
+    setIsComposing(false);
   };
 
   return (
@@ -59,6 +67,8 @@ export default function AddTask() {
             value={text}
             onChange={changeText}
             onKeyDown={handleKeyDown}
+            onCompositionStart={handleCompositionStart} // 追加
+            onCompositionEnd={handleCompositionEnd} // 追加
             className="w-screen md:max-w-md lg:max-w-[750px] bg-[#222831] h-auto outline-none placeholder-[#00ADB5] text-base ml-2"
           />
         </div>
