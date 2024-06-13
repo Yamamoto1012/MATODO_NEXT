@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './NicoNico.css';
 
 export default function NicoNico({ comment }) {
