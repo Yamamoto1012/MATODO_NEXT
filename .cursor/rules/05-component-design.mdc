@@ -1,0 +1,40 @@
+---
+description: "SRP準拠コンポーネント・フック分離・JSXとロジック分割"
+globs: front/components/**/*
+alwaysApply: false
+---
+# コンポーネント設計
+
+- **関数コンポーネントのみ**を使用し、クラスは避ける。  
+- UI とデータ取得・状態管理は分離し、ロジックはカスタムフックへ。  
+- コンポーネント・スタイル・テストは同一ディレクトリに配置して凝集度を高める。
+
+### スタイリング
+- **Tailwind CSS** を唯一のスタイル手段とする。`class` 直書きが基本、`twMerge` で結合可。
+- shadcn/ui をプリミティブとして利用し、必要に応じ `variant` 拡張でカスタマイズ。
+
+### アニメーション
+- **Framer Motion** を必須採用。`motion.div` などの薄いラッパーをレイアウト側で管理。
+- Motion のロジックは `src/components/animations` に共通化。
+
+### コンポーネント指針
+- デフォルトエクスポート禁止。`export const Button` など **名前付きエクスポート** を推奨。
+- Props は `interface`、オプショナル値には **必ずデフォルト値** を設定。
+- Storybook 用の `.stories.tsx` を同ディレクトリに置く。
+
+### コード例
+```tsx
+export type VoiceWaveformViewProps = {
+	canvasRef: React.RefObject<HTMLCanvasElement>;
+}
+
+export const VoiceWaveformView: React.FC<VoiceWaveformViewProps> = ({
+	canvasRef,
+}) => (
+	<div className="w-full h-16 bg-black/5 rounded-md overflow-hidden">
+		<canvas ref={canvasRef} width={300} height={64} className="w-full h-full" />
+	</div>
+);
+```
+
+

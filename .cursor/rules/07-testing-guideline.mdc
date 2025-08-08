@@ -1,0 +1,87 @@
+---
+description: テストに関するコードを確認する際
+alwaysApply: false
+---
+
+# 単体テスト指針
+
+* **React Testing Library** を使用し、Enzyme は避ける。
+* Arrange–Act–Assert パターンを徹底:
+
+  ```ts
+  it('挨拶を表示する', () => {
+    render(<Hello name="太郎" />);
+    expect(screen.getByText(/hello 太郎/i)).toBeInTheDocument();
+  });
+  ```
+
+## 推奨ディレクトリ & ファイル命名
+
+* テストファイルは対象コンポーネントの横に置き、`*.test.tsx` または `*.spec.tsx` を付ける。
+* 共通ユーティリティは `tests/utils` に配置する。
+
+## 共通セットアップ
+
+* `setupTests.ts` で Testing Library と MSW サーバを初期化:
+
+  ```ts
+  import { server } from '../mocks/server'
+  import { beforeAll, afterEach, afterAll } from 'vitest'
+
+  beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
+  afterEach(() => server.resetHandlers())
+  afterAll(() => server.close())
+  ```
+
+## MSW モック戦略
+
+* デフォルトハンドラを `src/mocks/handlers.ts` にまとめる。
+* テスト内で `server.use()` を使い分枝ケース(例外、空配列、遅延)を個別に上書きする。
+
+## テスト実装ガイドライン
+
+* **ユーザー視点で検証**：`getByRole`, `getByLabelText` などを優先。
+* **user-event** を使用して実際の操作を再現。
+* **実装詳細をテストしない**：DOM 構造やクラス名でのアサーションは避ける。
+* **単一アサーション主義**：1テストケースにつき主題は1つ。
+
+## カバレッジ & CI
+
+* `npm run test -- --coverage` で V8 カバレッジ出力。閾値は statements/branches 90%。
+* GitHub Actions:
+
+  ```yaml
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+      - run: npm ci
+      - run: npm run test -- --coverage
+  ```
+
+## 例：API コンポーネント
+
+```ts
+test('ユーザー名を表示', async () => {
+  render(<UserProfile />)
+  expect(screen.getByText(/loading/i)).toBeInTheDocument()
+  expect(await screen.findByText('John Doe')).toBeInTheDocument()
+})
+
+test('取得失敗でエラー表示', async () => {
+  server.use(
+    rest.get('/api/user', (_, res, ctx) => res(ctx.status(500)))
+  )
+  render(<UserProfile />)
+  expect(await screen.findByText(/failed to load user/i)).toBeInTheDocument()
+})
+```
+
+## 参考リンク
+
+* React Testing Library Query Priority: [https://testing-library.com/docs/queries/about/](https://testing-library.com/docs/queries/about/)
+* MSW Docs: [https://mswjs.io/](https://mswjs.io/)

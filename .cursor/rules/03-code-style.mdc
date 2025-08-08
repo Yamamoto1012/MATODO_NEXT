@@ -1,0 +1,245 @@
+---
+globs: *.ts,*.tsx,*.js,*.jsx
+alwaysApply: false
+---
+# コードスタイル
+
+- 文字列結合は **テンプレートリテラル** を使用。  
+- 単純な条件分岐は **三項演算子** または **オブジェクトマッピング** を使用。  
+- import 順序: 外部 → UI → alias → 相対。  
+- `any` 型とデフォルトエクスポートは禁止。  
+- 変数は `const`、再代入が必要なら別名変数。  
+- マジックナンバーは定数化。  
+
+## コード例
+
+### 1. 文字列結合
+
+```ts
+// 悪い例: + 演算子による結合
+const fullNameBad = firstName + " " + lastName;
+const messageBad = "Hello, " + name + "! You have " + count + " messages.";
+
+// 良い例: テンプレートリテラル
+const fullNameGood = `${firstName} ${lastName}`;
+const messageGood = `Hello, ${name}! You have ${count} messages.`;
+
+// より実践的な例: APIエンドポイントの構築
+const API_BASE = 'https://api.example.com';
+const VERSION = 'v1';
+
+function buildApiEndpoint(path: string, queryParams?: Record<string, string>): string {
+  const endpoint = `${API_BASE}/${VERSION}/${path}`;
+  if (!queryParams) return endpoint;
+
+  const queryString = Object.entries(queryParams)
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+    .join('&');
+
+  return `${endpoint}?${queryString}`;
+}
+
+// 使用例
+const userEndpoint = buildApiEndpoint('users', { id: '123', fields: 'name,email' });
+// 結果: 'https://api.example.com/v1/users?id=123&fields=name%2Cemail'
+```
+
+### 2. 条件分岐
+
+```ts
+// 悪い例: if-else の連鎖
+function getStatusBad(status: string): string {
+  if (status === "pending") {
+    return "処理中";
+  } else if (status === "completed") {
+    return "完了";
+  } else if (status === "failed") {
+    return "失敗";
+  } else {
+    return "不明";
+  }
+}
+
+// 良い例: オブジェクトマッピング
+const STATUS_MESSAGES = {
+  pending: "処理中",
+  completed: "完了",
+  failed: "失敗",
+} as const;
+
+function getStatusGood(status: keyof typeof STATUS_MESSAGES): string {
+  return STATUS_MESSAGES[status] ?? "不明";
+}
+
+// より実践的な例: ユーザーアクセスレベルの表示
+type AccessLevel = 'admin' | 'editor' | 'viewer';
+
+const ACCESS_LEVEL_CONFIG = {
+  admin: {
+    label: '管理者',
+    color: 'red',
+    permissions: ['read', 'write', 'delete']
+  },
+  editor: {
+    label: '編集者',
+    color: 'blue',
+    permissions: ['read', 'write']
+  },
+  viewer: {
+    label: '閲覧者',
+    color: 'green',
+    permissions: ['read']
+  }
+} as const;
+
+function AccessLevelBadge({ level }: { level: AccessLevel }) {
+  const config = ACCESS_LEVEL_CONFIG[level];
+  return (
+    <span className={`badge badge-${config.color}`}>
+      {config.label}
+    </span>
+  );
+}
+```
+
+### 3. import 順序
+
+```ts
+// 外部ライブラリ
+import { useState, useEffect } from 'react';
+import { atom, useAtom } from 'jotai';
+import { z } from 'zod';
+
+// UI フレームワーク
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card } from '@/components/ui/card';
+
+// エイリアス
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/useToast';
+import { API_BASE_URL } from '@/config/constants';
+
+// 相対パス
+import { UserProfile } from './UserProfile';
+import { type User } from '../types';
+import { formatDate } from '../utils/date';
+```
+
+### 4. 型安全性
+
+```ts
+// 悪い例: any の使用
+function processDataBad(data: any): any {
+  return data.map((item: any) => item.value);
+}
+
+// 良い例: 具体的な型定義
+interface DataItem {
+  id: string;
+  value: number;
+  metadata?: Record<string, unknown>;
+}
+
+function processDataGood(data: DataItem[]): number[] {
+  return data.map(item => item.value);
+}
+
+// より実践的な例: APIレスポンスの型定義
+interface ApiResponse<T> {
+  data: T;
+  meta: {
+    page: number;
+    total: number;
+    lastUpdated: string;
+  };
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+async function fetchUsers(): Promise<ApiResponse<User[]>> {
+  const response = await fetch('/api/users');
+  if (!response.ok) {
+    throw new Error('Failed to fetch users');
+  }
+  return response.json();
+}
+```
+
+### 5. 変数宣言
+
+```ts
+// 悪い例: let の使用
+let count = 0;
+count = count + 1;
+
+// 良い例: const の使用
+const initialCount = 0;
+const updatedCount = initialCount + 1;
+
+// より実践的な例: フォーム状態の管理
+interface FormState {
+  values: Record<string, string>;
+  errors: Record<string, string>;
+  isDirty: boolean;
+}
+
+function useFormState(initialValues: Record<string, string>) {
+  const [state, setState] = useState<FormState>({
+    values: initialValues,
+    errors: {},
+    isDirty: false
+  });
+
+  const updateField = (field: string, value: string) => {
+    setState(prev => ({
+      ...prev,
+      values: { ...prev.values, [field]: value },
+      isDirty: true
+    }));
+  };
+
+  return { state, updateField };
+}
+```
+
+### 6. 定数化
+
+```ts
+// 悪い例: マジックナンバー
+if (user.age < 18) {
+  return "未成年";
+}
+
+// 良い例: 定数の使用
+const LEGAL_AGE = 18;
+const MAX_RETRY_COUNT = 3;
+const API_TIMEOUT = 5000;
+
+if (user.age < LEGAL_AGE) {
+  return "未成年";
+}
+
+// より実践的な例: 設定値の定数化
+const AUTH_CONFIG = {
+  TOKEN_EXPIRY: 24 * 60 * 60 * 1000, // 24時間
+  MIN_PASSWORD_LENGTH: 8,
+  MAX_LOGIN_ATTEMPTS: 5,
+  LOCKOUT_DURATION: 30 * 60 * 1000, // 30分
+} as const;
+
+const API_CONFIG = {
+  BASE_URL: 'https://api.example.com',
+  VERSION: 'v1',
+  TIMEOUT: 10000,
+  RETRY_COUNT: 3,
+} as const;
+
+const FILE_UPLOAD_CONFIG = {
+  MAX_SIZE: 5 * 1024 * 1024, // 5MB
+  ALLOWED_TYPES: ['image/jpeg', 'image/png', 'application/pdf'],
+  MAX_FILES: 10,
+} as const;
+```

@@ -1,0 +1,230 @@
+---
+description: "命名規約とコメント方針 ― 可読性向上ルール"
+globs: *.ts,*.tsx,*.js,*.jsx
+alwaysApply: false
+---
+# 命名 & コメント指針
+
+- **「何をするか」でなく「なぜそうするか」を書く**: コメントは意図・背景を説明。  
+- **完全かつ明示的な識別子**を使用し、省略語を避ける: `userId`、`dnsConnectionIndex` など。  
+- ドメインを示す接頭辞/接尾辞を付与して衝突防止。  
+
+## コード例
+
+### 1. 「なぜそうするか」をコメントする
+
+コードが何をしているかは読めばわかります。コメントでは、そのコードが存在する理由や背景、設計上の判断を説明します。
+
+```ts
+// 悪い例: 何をしているかを説明している (コードを読めばわかる)
+// i を 1 増やす
+// i++;
+
+// 良い例: なぜそうするのかを説明している
+// ユーザーがセッションの有効期限切れでリダイレクトされた場合、
+// 次回のログイン時に元のページに戻すために、現在のパスを保存する。
+// この処理は、ユーザー体験を向上させるためのもので、特定のエッジケースに対応する。
+saveReturnToPath(currentPath);
+
+// より実践的な例: 複雑なロジックの意図を説明
+// この条件は、無料プランのユーザーが特定の機能（例：高度な分析）にアクセスしようとした際に、
+// アップグレードを促すモーダルを表示するためのものです。
+// 定数 `MAX_FREE_TIER_REPORTS` は、無料ユーザーが生成できるレポートの上限を示します。
+if (user.plan === "free" && reports.length >= MAX_FREE_TIER_REPORTS) {
+  showUpgradeModal();
+}
+
+// より実践的な例: パフォーマンス最適化の意図を説明
+// この関数は、大量のデータを処理する際のメモリ使用量を最適化するために、
+// ストリーミング処理を実装しています。各チャンクを個別に処理することで、
+// メモリ使用量を一定に保ち、OOMエラーを防ぎます。
+async function processLargeDataset(dataset: AsyncIterable<DataChunk>) {
+  for await (const chunk of dataset) {
+    await processChunk(chunk);
+  }
+}
+
+// より実践的な例: セキュリティ関連の意図を説明
+// この関数は、XSS攻撃を防ぐために、ユーザー入力のサニタイズを行います。
+// 特に、HTMLタグやJavaScriptコードの実行を防ぐために、
+// 特殊文字をエスケープし、許可されたタグのみを残します。
+function sanitizeUserInput(input: string): string {
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+```
+
+### 2. 完全かつ明示的な識別子
+
+変数名や関数名は、その役割が一目でわかるように、省略せずに記述します。
+
+```ts
+// 悪い例: 短すぎる、または曖昧な名前
+const val = 10; // 何の値？
+function proc(d: Data) { /* ... */ } // proc は何を処理する？ d の内容は？
+const idx = users.findIndex(u => u.id === currentId); // idx は何のインデックス？
+
+// 良い例: 明確で具体的な名前
+const maxLoginAttempts = 10;
+
+interface UserProfile {
+  id: string;
+  displayName: string;
+  // ... 他のプロパティ
+}
+function processUserProfile(userData: UserProfile) { /* ... */ }
+
+const targetUserIndex = users.findIndex(user => user.id === currentUserId);
+
+// より実践的な例: ビジネスロジックでの命名
+type PaymentMethod = 'credit_card' | 'bank_transfer' | 'paypal';
+
+interface PaymentTransaction {
+  id: string;
+  amount: number;
+  currency: string;
+  paymentMethod: PaymentMethod;
+  status: 'pending' | 'completed' | 'failed';
+  timestamp: Date;
+}
+
+function calculatePaymentFee(
+  transaction: PaymentTransaction,
+  feeRates: Record<PaymentMethod, number>
+): number {
+  return transaction.amount * feeRates[transaction.paymentMethod];
+}
+
+// より実践的な例: UIコンポーネントでの命名
+interface ButtonProps {
+  variant: 'primary' | 'secondary' | 'danger';
+  size: 'small' | 'medium' | 'large';
+  isLoading?: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}
+
+function Button({
+  variant,
+  size,
+  isLoading = false,
+  onClick,
+  children
+}: ButtonProps) {
+  return (
+    <button
+      className={`btn-${variant} btn-${size}`}
+      disabled={isLoading}
+      onClick={onClick}
+    >
+      {isLoading ? 'Loading...' : children}
+    </button>
+  );
+}
+```
+
+### 3. ドメインを示す接頭辞/接尾辞 (必要な場合)
+
+大規模なプロジェクトや複数のモジュールが絡み合う場合、名前の衝突を避けるために、ドメイン（機能領域やモジュール名など）を示す接頭辞や接尾辞を検討します。ただし、過度な使用は冗長になるため注意が必要です。
+
+```ts
+// 例: 複数の支払いゲートウェイを扱う場合
+// Stripe関連の関数
+function stripe_calculatePaymentFee(amount: number): number {
+  // Stripeのロジック
+  return amount * 0.03; // 仮の計算
+}
+
+// PayPal関連の関数
+function paypal_calculateTransactionFee(amount: number): number {
+  // PayPalのロジック
+  return amount * 0.025; // 仮の計算
+}
+
+// より実践的な例: モジュールや名前空間を利用 (TypeScriptの場合)
+namespace StripeGateway {
+  export function calculateFee(amount: number): number {
+    return amount * 0.03;
+  }
+  export const API_KEY = "stripe_...";
+}
+
+namespace PaypalGateway {
+  export function calculateFee(amount: number): number {
+    return amount * 0.025;
+  }
+  export const CLIENT_ID = "paypal_...";
+}
+
+// より実践的な例: 状態管理での命名
+// Jotai atoms
+const userSettingsAtom = atom({
+  theme: 'dark',
+  language: 'ja',
+  notifications: true
+});
+
+const authLoadingState = atom(false);
+
+// Zustand store
+interface AuthStore {
+  user: User | null;
+  isLoading: boolean;
+  error: Error | null;
+  login: (credentials: Credentials) => Promise<void>;
+  logout: () => void;
+}
+
+const useAuthStore = create<AuthStore>((set) => ({
+  user: null,
+  isLoading: false,
+  error: null,
+  login: async (credentials) => {
+    set({ isLoading: true, error: null });
+    try {
+      const user = await loginApi(credentials);
+      set({ user, isLoading: false });
+    } catch (error) {
+      set({ error, isLoading: false });
+    }
+  },
+  logout: () => set({ user: null })
+}));
+
+// より実践的な例: APIレスポンスの型定義
+interface UserApiResponse {
+  id: string;
+  name: string;
+  email: string;
+  createdAt: string;
+  updatedAt: string;
+  preferences: {
+    theme: 'light' | 'dark';
+    notifications: boolean;
+  };
+}
+
+interface ErrorApiResponse {
+  code: string;
+  message: string;
+  details?: Record<string, unknown>;
+}
+
+type ApiResponse<T> = {
+  data: T;
+  meta: {
+    timestamp: string;
+    version: string;
+  };
+} | {
+  error: ErrorApiResponse;
+  meta: {
+    timestamp: string;
+    version: string;
+  };
+};
+```
