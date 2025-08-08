@@ -4,6 +4,7 @@ import { auth, db } from "../app/firebase";
 import {
   query,
   collection,
+  onSnapshot,
   doc,
   updateDoc,
   deleteDoc,
@@ -12,15 +13,14 @@ import {
 } from "firebase/firestore";
 import DatePicker from "react-datepicker";
 import TaskCard from "./TaskCard"; // TaskCardコンポーネントの実装は未定義
+import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import "react-datepicker/dist/react-datepicker.css";
-import NicoNico from "./NicoNico";
 
 export default function TaskList() {
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
   const [showSidebar, setShowSidebar] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [comment, setComment] = useState("");
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -54,13 +54,6 @@ export default function TaskList() {
     setShowSidebar(false);
   };
 
-  const handleNicoNico = (comment) => {
-    setComment(comment);
-    setTimeout(() => {
-      setComment("");
-    }, 4000);
-  }
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setSelectedTask((prev) => ({ ...prev, [name]: value }));
@@ -75,7 +68,6 @@ export default function TaskList() {
       const taskRef = doc(db, "tasks", selectedTask.id);
       try {
         await updateDoc(taskRef, updates);
-        handleNicoNico("タスクを更新しました");
         // 更新後のタスクリストをフェッチする必要がある場合は、ここでfetchTasks()を呼び出します。
       } catch (error) {
         console.error("Error updating task:", error);
@@ -174,7 +166,6 @@ export default function TaskList() {
           </div>
         </div>
       )}
-      <NicoNico comment={comment}/>
     </div>
   );
 }
