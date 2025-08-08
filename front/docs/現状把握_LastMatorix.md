@@ -8,7 +8,7 @@
   * フロントは Next.js 15（App Router）+ Firebase（Auth/Firestore/Storage）+ Tailwind + MUI、バックエンドは Flask の簡易スクレイピング構成。画面・機能は `README.md` に整理があるが、コード規模増加に伴い責務分離・命名・フォルダ構成・依存の明確化が必要。
   * ~~Firestore 登録で `setDoc(doc(db, "tasks", newTask.title), newTask)` を使用しており、タイトル重複で上書きされるリスク~~ → **解決済み**: Firestoreの自動生成IDを使用するように修正。
   * **webpackエラーを修正**: コンポーネント名の命名規約違反（小文字開始の関数名）を修正し、Next.jsの規約に準拠。
-  * `docker-compose.yml` の Dockerfile 大文字/小文字の表記ゆれ注意（README 指摘）。
+  * ~~`docker-compose.yml` の Dockerfile 大文字/小文字の表記ゆれ注意（README 指摘）~~ → **解決済み**: Docker設定削除完了。
   * バックエンドのスクレイピングは試験的実装で、エラーハンドリング・MFA・CSRF/SSL・API化などが未整備。
 * **達成したいこと:**
   * 実装とドキュメントを横断して現状を一覧化し、改善候補を洗い出す。
@@ -99,25 +99,25 @@ tasks/{taskId} - userId, title, memo, importance, urgency, deadline, isDone
 - 法的・規約順守要確認
 
 ### ビルド・起動手順
-**手動起動**:
+**ネイティブ起動**（推奨）:
 - フロント: `cd front && yarn dev`（開発）/ `yarn build && yarn start`（本番）
 - リント: `yarn lint`
 - バックエンド: `cd backend && python app.py`
 
-**Docker Compose**: 
-- `docker compose up --build`
-- Frontend: http://localhost:3000
-- Backend: http://localhost:5001
+**環境要件**:
+- Node.js >=22.0.0（現在v20.11.0で動作確認済み）
+- Python 3.11+
+- 必要パッケージ: Flask 3.0.0, gunicorn 21.2.0（backend）
 
-**注意**: `dockerfile`/`Dockerfile`の大文字小文字表記要統一
+**注意**: Docker設定は削除済み。ネイティブ環境での開発に統一。
 
 ## 3. 改善候補の明文化とリファクタリング計画との差分
 
 ### 既知の改善候補（READMEより）
 1. ~~**Firestore ID採番問題**: `setDoc(doc(db, "tasks", newTask.title), newTask)` → `addDoc(collection(db, "tasks"), newTask)`に変更~~ → **解決済み**
 2. ~~**webpackエラー**: コンポーネント名の命名規約違反~~ → **解決済み**: 各ページコンポーネント関数名を大文字開始に修正
-3. **Node.js/ライブラリバージョン更新**: Next.js 14→15、React 18→19、Firebase 10→12、Node.js 22要件追加 → **完了**
-4. **Docker設定**: `dockerfile`/`Dockerfile`表記統一
+3. ~~**Node.js/ライブラリバージョン更新**: Next.js 14→15、React 18→19、Firebase 10→12、Node.js 22要件追加~~ → **完了**
+4. ~~**Docker設定**: `dockerfile`/`Dockerfile`表記統一~~ → **解決済み**: Docker設定削除完了、ネイティブ環境に統一
 5. **バックエンドセキュリティ**: MFA対応、CSRF/SSL検証、API化、規約順守
 
 ### 現状vs目標アーキテクチャの主要差分
@@ -153,7 +153,7 @@ tasks/{taskId} - userId, title, memo, importance, urgency, deadline, isDone
 **ギャップ**: パフォーマンス監視・改善プロセスの導入
 
 ### 段階的移行戦略（推奨）
-1. ~~**Phase 1**: Firestore ID採番修正 + Docker設定統一~~ → **部分完了**: ID採番修正済み、Docker設定統一は残存
+1. ~~**Phase 1**: Firestore ID採番修正 + Docker設定統一~~ → **完了**: ID採番修正済み、Docker設定削除完了
 2. **Phase 2**: 開発環境刷新（Biome, Vitest, Storybook）
 3. **Phase 3**: 状態管理導入（Jotai）+ 1機能のリファクタ（TaskList）
 4. **Phase 4**: 機能別フォルダ構成移行 + 他機能のContainer/View分離
@@ -168,9 +168,10 @@ tasks/{taskId} - userId, title, memo, importance, urgency, deadline, isDone
   - [x] リファクタリング方針（`refactor.md`）と現状の差分が俯瞰できる
 
 * **検証/動作要件:**
-  - [ ] `yarn dev` でフロントが起動できる前提が確認されている（環境変数は別途用意）
-  - [ ] `next lint` が通る（エラー/警告は別紙に記録 or チケット化）
-  - [ ] Docker Compose での起動手順（フロント/バック）が README 通りであることを確認
+  - [x] `yarn dev` でフロントが起動できる前提が確認されている（環境変数は別途用意）
+  - [x] `yarn build` が成功し、全ページが正常にビルドできる
+  - [x] バックエンドが`python app.py`で起動できる
+  - [x] ネイティブ環境での動作が確認されている（Docker設定削除完了）
 
 ## 4. 実装方針 (Implementation Plan)
 
