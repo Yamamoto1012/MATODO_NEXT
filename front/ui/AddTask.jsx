@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
-import { doc, setDoc } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { auth, db } from "../app/firebase";
 
 export default function AddTask() {
@@ -32,12 +32,16 @@ export default function AddTask() {
 
   const changeText = (e) => setText(e.target.value);
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = async (e) => {
     if (e.key === "Enter" && !isComposing) {
       const newTask = createNewTask();
       if (newTask) {
-        setDoc(doc(db, "tasks", newTask.title), newTask);
-        setText("");
+        try {
+          await addDoc(collection(db, "tasks"), newTask);
+          setText("");
+        } catch (error) {
+          console.error("タスクの作成に失敗しました:", error);
+        }
       }
     } else if (e.key === "Escape") {
       setText("");
