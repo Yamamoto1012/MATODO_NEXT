@@ -1,0 +1,16 @@
+---
+description: "ファイル構造 & Enum/定数管理 ― Auto Attach"
+globs: front/**/*
+alwaysApply: false
+---
+# プロジェクト構造 & 定数管理
+
+- **機能単位**（例 `/features/Auth`）でディレクトリを分割。  
+- Enum・定数は `/constants` に集約し再利用性と型安全性を確保。  
+  ```ts
+  export enum Status {
+    Invalid = 0,
+    Valid = 1,
+  }
+
+コンポーネント内のマジックナンバー/文字列を廃止し、定数を参照。

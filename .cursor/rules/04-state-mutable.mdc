@@ -1,0 +1,330 @@
+---
+description: "useState/useReducer の最適化とイミュータブル配列操作"
+globs: front/app/hooks/**/*
+alwaysApply: false
+---
+# 状態管理
+
+- 関連状態は **カスタムフック** またはオブジェクトに集約し再レンダリングを削減。
+- オプショナルな props には必ずデフォルト値を与える。
+- 配列は `map` / `filter` / `reduce` 等の **イミュータブル操作**を優先する。
+
+## コード例
+
+### 1. 状態管理ライブラリとイミュータブルな更新
+
+#### a. Jotai (アトミックな状態管理)
+
+小さな状態（atom）を組み合わせてアプリケーションの状態を構築します。更新は常にイミュータブルに行われます。
+
+```tsx
+// atoms.ts
+import { atom } from 'jotai';
+
+type Todo = {
+  id: number;
+  text: string;
+  completed: boolean;
+};
+
+// Todoリストのatom (初期値は空配列)
+export const todosAtom = atom<Todo[]>([]);
+
+// 新しいTodoを追加する書き込み専用atom
+export const addTodoAtom = atom(
+  null, // 読み取りはしないので null
+  (get, set, newTodoText: string) => {
+    const newTodo: Todo = {
+      id: Date.now(),
+      text: newTodoText,
+      completed: false,
+    };
+    // スプレッド構文でイミュータブルに追加
+    set(todosAtom, (prevTodos) => [...prevTodos, newTodo]);
+  }
+);
+
+// Todoの完了状態をトグルする書き込み専用atom
+export const toggleTodoAtom = atom(
+  null,
+  (get, set, todoId: number) => {
+    set(todosAtom, (prevTodos) =>
+      // mapで新しい配列を作成し、対象のTodoのみ新しいオブジェクトで置き換える
+      prevTodos.map((todo) =>
+        todo.id === todoId ? { ...todo, completed: !todo.completed } : todo
+      )
+    );
+  }
+);
+
+// 完了済みTodoを削除する書き込み専用atom
+export const removeCompletedTodosAtom = atom(
+  null,
+  (get, set) => {
+    // filterで完了していないTodoのみを含む新しい配列を作成
+    set(todosAtom, (prevTodos) => prevTodos.filter(todo => !todo.completed));
+  }
+);
+
+/*
+// --- コンポーネントでの使用例 ---
+import { useAtom } from 'jotai';
+import { todosAtom, addTodoAtom, toggleTodoAtom } from './atoms';
+
+function TodoList() {
+  const [todos] = useAtom(todosAtom);
+  const [, addTodo] = useAtom(addTodoAtom);
+  const [, toggleTodo] = useAtom(toggleTodoAtom);
+
+  // (UIコンポーネントの実装は省略)
+}
+*/
+```
+
+#### b. Zustand (Fluxライクな状態管理)
+
+`setState` に似たAPIを提供しますが、状態更新はイミュータブルに行う必要があります。
+
+```ts
+// store.ts
+import { create } from 'zustand';
+
+type Item = {
+  id: string;
+  name: string;
+  quantity: number;
+};
+
+interface CartState {
+  items: Item[];
+  addItem: (newItem: Omit<Item, 'id' | 'quantity'>) => void;
+  removeItem: (itemId: string) => void;
+  updateItemQuantity: (itemId: string, newQuantity: number) => void;
+}
+
+export const useCartStore = create<CartState>((set) => ({
+  items: [],
+  addItem: (newItem) =>
+    set((state) => {
+      const existingItem = state.items.find((item) => item.name === newItem.name);
+      if (existingItem) {
+        // 既存アイテムがあれば数量を増やす (イミュータブルに)
+        return {
+          items: state.items.map((item) =>
+            item.id === existingItem.id
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          ),
+        };
+      }
+      // 新規アイテムを追加 (イミュータブルに)
+      return {
+        items: [
+          ...state.items,
+          { ...newItem, id: `item-${Date.now()}`, quantity: 1 },
+        ],
+      };
+    }),
+  removeItem: (itemId) =>
+    set((state) => ({
+      // filterで新しい配列を作成
+      items: state.items.filter((item) => item.id !== itemId),
+    })),
+  updateItemQuantity: (itemId, newQuantity) =>
+    set((state) => ({
+      // mapで新しい配列と新しいアイテムオブジェクトを作成
+      items: state.items.map((item) =>
+        item.id === itemId ? { ...item, quantity: Math.max(0, newQuantity) } : item
+      ),
+    })),
+}));
+
+/*
+// --- コンポーネントでの使用例 ---
+import { useCartStore } from './store';
+
+function CartDisplay() {
+  const { items, removeItem } = useCartStore();
+  // (UIコンポーネントの実装は省略)
+}
+*/
+```
+
+#### c. useReducer (React 標準フック)
+
+`useReducer` で状態を更新する際も、常に新しい状態オブジェクト/配列を返すことでイミュータブルビリティを保ちます。
+
+```tsx
+// Counter.tsx
+import React, { useReducer } from 'react';
+
+type CounterState = {
+  count: number;
+  history: number[]; // 操作履歴を保持する例
+};
+
+type CounterAction =
+  | { type: 'increment'; payload?: number }
+  | { type: 'decrement'; payload?: number }
+  | { type: 'reset' };
+
+const initialState: CounterState = {
+  count: 0,
+  history: [],
+};
+
+function reducer(state: CounterState, action: CounterAction): CounterState {
+  switch (action.type) {
+    case 'increment':
+      const newCountInc = state.count + (action.payload || 1);
+      return {
+        ...state, // 既存の状態を展開
+        count: newCountInc,
+        history: [...state.history, newCountInc], // historyもイミュータブルに更新
+      };
+    case 'decrement':
+      const newCountDec = state.count - (action.payload || 1);
+      return {
+        ...state,
+        count: newCountDec,
+        history: [...state.history, newCountDec],
+      };
+    case 'reset':
+      return {
+        ...initialState, // 初期状態の新しいオブジェクトを返す
+        history: [...state.history, initialState.count],
+      };
+    default:
+      throw new Error('Unknown action type');
+  }
+}
+
+// --- コンポーネントでの使用例 ---
+function Counter() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    <div>
+      <p>Count: {state.count}</p>
+      <button onClick={() => dispatch({ type: 'increment', payload: 5 })}>+5</button>
+      <button onClick={() => dispatch({ type: 'decrement' })}>-1</button>
+      <button onClick={() => dispatch({ type: 'reset' })}>Reset</button>
+      <p>History: {state.history.join(', ')}</p>
+    </div>
+  );
+}
+```
+
+### 2. 配列のイミュータブル操作
+
+`map`, `filter`, `reduce`, スプレッド構文 (`...`) を使用して、元の配列を変更せずに新しい配列を作成します。
+
+```ts
+const initialNumbers = [1, 2, 3, 4, 5];
+
+// 要素の追加 (末尾)
+const addedNumber = 6;
+const numbersWithAdded = [...initialNumbers, addedNumber];
+// -> [1, 2, 3, 4, 5, 6]
+
+// 要素の追加 (先頭)
+const prependedNumber = 0;
+const numbersWithPrepended = [prependedNumber, ...initialNumbers];
+// -> [0, 1, 2, 3, 4, 5]
+
+// 要素の削除 (filter)
+const numberToRemove = 3;
+const numbersWithoutRemoved = initialNumbers.filter(num => num !== numberToRemove);
+// -> [1, 2, 4, 5]
+
+// 要素の置換 (map)
+const numberToReplace = 4;
+const replacementNumber = 40;
+const numbersWithReplaced = initialNumbers.map(num =>
+  num === numberToReplace ? replacementNumber : num
+);
+// -> [1, 2, 3, 40, 5]
+
+// 特定のインデックスの要素を更新
+const indexToUpdate = 1; // 2番目の要素 (値: 2)
+const newValueForIndex = 22;
+const numbersWithIndexUpdated = initialNumbers.map((num, index) =>
+  index === indexToUpdate ? newValueForIndex : num
+);
+// -> [1, 22, 3, 4, 5]
+
+// 配列の一部分をスライスして新しい配列を作成 (sliceは元々イミュータブル)
+const slicedNumbers = initialNumbers.slice(1, 4); // インデックス1から3まで
+// -> [2, 3, 4]
+
+// 配列の並び替え (元の配列を変更しないようにコピーしてからsort)
+const sortedNumbers = [...initialNumbers].sort((a, b) => b - a);
+// -> [5, 4, 3, 2, 1]
+```
+
+### 3. オプショナルな Props のデフォルト値
+
+コンポーネントの Props でオプショナルな値がある場合、デフォルト値を設定することで `undefined` の扱いを明確にし、エラーを防ぎます。
+
+```tsx
+// MyComponent.tsx
+import React from 'react';
+
+interface MyComponentProps {
+  title: string;
+  theme?: 'light' | 'dark'; // オプショナルなtheme
+  items?: string[];         // オプショナルな配列
+  onAction?: () => void;    // オプショナルなコールバック
+}
+
+// デフォルトPropsを定義
+const defaultProps: Partial<MyComponentProps> = {
+  theme: 'light',
+  items: [],
+  onAction: () => console.log('Default action triggered'),
+};
+
+export function MyComponent(props: MyComponentProps) {
+  // propsをマージしてデフォルト値を適用
+  const { title, theme, items, onAction } = { ...defaultProps, ...props };
+
+  const style = {
+    backgroundColor: theme === 'dark' ? '#333' : '#FFF',
+    color: theme === 'dark' ? '#FFF' : '#333',
+    padding: '1rem',
+    borderRadius: '8px',
+  };
+
+  return (
+    <div style={style}>
+      <h1>{title}</h1>
+      {items && items.length > 0 ? (
+        <ul>
+          {items.map((item, index) => <li key={index}>{item}</li>)}
+        </ul>
+      ) : (
+        <p>No items provided.</p>
+      )}
+      <button onClick={onAction}>Perform Action</button>
+    </div>
+  );
+}
+
+// --- コンポーネントでの使用例 ---
+function App() {
+  return (
+    <div>
+      {/* 必須プロパティのみ渡す */}
+      <MyComponent title="Default Theme" />
+
+      {/* 全てのプロパティを渡す */}
+      <MyComponent
+        title="Dark Theme with Items"
+        theme="dark"
+        items={['Apple', 'Banana', 'Cherry']}
+        onAction={() => alert('Custom Action!')}
+      />
+    </div>
+  );
+}
+```
