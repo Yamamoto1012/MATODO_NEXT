@@ -51,7 +51,7 @@ export default function ProfilePage() {
       <div className="bg-gray-900 p-32 rounded-lg shadow-lg text-white">
         <div className="flex flex-col items-center">
           <div className=" w-96 h-64 mb-3 items-center flex justify-center">
-            <Image src={user && user.iconUrl ? user.iconUrl : "/default-icon.svg"} width={250} height={250} className="rounded-full transform transition-transform duration-150 ease-in-out hover:scale-125" />
+            <Image src={user && user.iconUrl ? user.iconUrl : "/default-icon.svg"} width={250} height={250} alt={user ? user.name : "プロフィール画像"} className="rounded-full transform transition-transform duration-150 ease-in-out hover:scale-125" />
           </div>
           <p className="text-lg font-semibold">{user ? user.name : "読み込み中..."}</p>
           <p className="text-sm">{user ? user.position : "役職"}</p>

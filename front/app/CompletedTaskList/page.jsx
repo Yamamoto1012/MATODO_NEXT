@@ -37,7 +37,7 @@ export default function Page() {
       // コンポーネントのアンマウント時にリスナーを解除
       return () => unsubscribe();
     }
-  }, [auth.currentUser]);
+  }, []);
 
   const revertTask = async (taskId) => {
     const taskDocRef = doc(db, "tasks", taskId);
