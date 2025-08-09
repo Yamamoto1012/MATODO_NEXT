@@ -1,9 +1,9 @@
-"use client";
-import Image from "next/image";
-import { auth, db } from "../../firebase";
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { useRouter } from "next/navigation";
-import { doc, getDoc } from "firebase/firestore";
+'use client';
+import Image from 'next/image';
+import { auth, db } from '../../firebase';
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
+import { doc, getDoc } from 'firebase/firestore';
 
 //Googleアカウントでログイン
 export function GoogleLogin() {
@@ -14,19 +14,19 @@ export function GoogleLogin() {
       .then(async (result) => {
         const user = result.user;
         // Firestoreでユーザープロフィールを確認
-        const userProfileRef = doc(db, "users", user.uid);
+        const userProfileRef = doc(db, 'users', user.uid);
         const userProfileSnap = await getDoc(userProfileRef);
 
         if (userProfileSnap.exists()) {
           // プロフィールが存在する場合、Homeにリダイレクト
-          router.push("/Home");
+          router.push('/Home');
         } else {
           // プロフィールが存在しない場合、プロフィール作成ページにリダイレクト
-          router.push("/CreateProfile");
+          router.push('/CreateProfile');
         }
       })
       .catch((error) => {
-        console.error("ログインエラー", error);
+        console.error('ログインエラー', error);
       });
   };
   return (

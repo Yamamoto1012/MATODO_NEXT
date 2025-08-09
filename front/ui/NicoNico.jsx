@@ -15,10 +15,5 @@ export default function NicoNico({ comment }) {
 
   if (!show) return null;
 
-  return (
-    <div className="comment-flow">
-      {comment}
-    </div>
-  );
-};
-
+  return <div className="comment-flow">{comment}</div>;
+}

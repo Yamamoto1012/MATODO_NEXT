@@ -1,11 +1,9 @@
-import React from "react";
+import React from 'react';
 
 export default function TaskCard({ task, onCheckboxChange, onCardClick }) {
   // 現在の日付をJSTで取得
   const getJSTDate = () => {
-    return new Date(
-      new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })
-    );
+    return new Date(new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' }));
   };
 
   // 期限が今日または過去の日付かどうかを判断
@@ -27,9 +25,7 @@ export default function TaskCard({ task, onCheckboxChange, onCardClick }) {
     const diff = deadline - now; // ミリ秒で差分を計算
 
     const diffDays = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const diffHours = Math.floor(
-      (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-    );
+    const diffHours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const diffMinutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const diffSeconds = Math.floor((diff % (1000 * 60)) / 1000); // 秒単位での残り時間を追加
 
@@ -61,18 +57,10 @@ export default function TaskCard({ task, onCheckboxChange, onCardClick }) {
       </div>
       <div className="ml-4">
         <p className="text-[14px] font-light text-white">{task.title}</p>
-        <p
-          className={`text-[12px] ${
-            isDeadlinePast() ? "text-red-500" : "text-blue-500"
-          }`}
-        >
+        <p className={`text-[12px] ${isDeadlinePast() ? 'text-red-500' : 'text-blue-500'}`}>
           {task.deadline}
         </p>
-        <p
-          className={`text-[12px] ${
-            isDeadlinePast() ? "text-red-500" : "text-blue-500"
-          }`}
-        >
+        <p className={`text-[12px] ${isDeadlinePast() ? 'text-red-500' : 'text-blue-500'}`}>
           {remainingTime()}
         </p>
       </div>
