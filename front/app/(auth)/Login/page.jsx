@@ -1,22 +1,22 @@
-"use client";
-import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
-import { useEffect, useState } from "react";
-import { auth } from "../../firebase";
-import { useRouter } from "next/navigation";
+'use client';
+import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
+import { useEffect, useState } from 'react';
+import { auth } from '../../firebase';
+import { useRouter } from 'next/navigation';
 
 //既存のユーザーでログイン
 export default function Page() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log("ログインしているユーザー:", user);
+        console.log('ログインしているユーザー:', user);
       } else {
-        console.log("ユーザーがログインしていません");
+        console.log('ユーザーがログインしていません');
       }
     });
 
@@ -29,8 +29,8 @@ export default function Page() {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // ログイン成功時の処理
-        alert("ログインしました");
-        router.push("/Home");
+        alert('ログインしました');
+        router.push('/Home');
       })
       .catch((error) => {
         // ログイン失敗時のエラー処理

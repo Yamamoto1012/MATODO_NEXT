@@ -1,18 +1,18 @@
-"use client";
-import React from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { GoogleLogin } from "./GoogleAuth";
+'use client';
+import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { GoogleLogin } from './GoogleAuth';
 
 export default function AuthPage() {
   const router = useRouter();
   const handleCreate = () => {
-    router.push("/AccountCreating");
+    router.push('/AccountCreating');
   };
 
   const handleLogin = () => {
-    router.push("/Login");
+    router.push('/Login');
   };
   return (
     <div className="bg-[#393E4F] h-screen w-screen flex justify-center items-center">

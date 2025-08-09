@@ -1,17 +1,10 @@
-"use client";
-import {
-  collection,
-  doc,
-  onSnapshot,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { auth, db } from "../firebase";
+'use client';
+import { collection, doc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import { auth, db } from '../firebase';
 
-import AddTask from "../../ui/AddTask";
-import Menu from "../../ui/Menu";
+import AddTask from '../../ui/AddTask';
+import Menu from '../../ui/Menu';
 
 export default function Page() {
   const [tasks, setTasks] = useState([]);
@@ -19,11 +12,11 @@ export default function Page() {
   useEffect(() => {
     if (auth.currentUser) {
       const userId = auth.currentUser.uid;
-      const tasksCollectionRef = collection(db, "tasks");
+      const tasksCollectionRef = collection(db, 'tasks');
       const q = query(
         tasksCollectionRef,
-        where("userId", "==", userId),
-        where("isDone", "==", true)
+        where('userId', '==', userId),
+        where('isDone', '==', true)
       );
 
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -40,7 +33,7 @@ export default function Page() {
   }, []);
 
   const revertTask = async (taskId) => {
-    const taskDocRef = doc(db, "tasks", taskId);
+    const taskDocRef = doc(db, 'tasks', taskId);
     await updateDoc(taskDocRef, {
       isDone: false,
     });
@@ -52,17 +45,12 @@ export default function Page() {
       <Menu />
       <div className="flex-1 flex flex-col items-center px-16 py-8">
         <div className="py-6 space-y-2 w-full max-w-full ">
-          <h2 className="text-4xl font-semibold text-[#00ADB5]">
-            完了済タスク
-          </h2>
+          <h2 className="text-4xl font-semibold text-[#00ADB5]">完了済タスク</h2>
           <div className="w-full h-2.5 bg-[#00ADB5]"></div>
         </div>
         <div className="w-full max-w-full space-y-4">
           {tasks.map((task) => (
-            <div
-              key={task.id}
-              className="flex items-center rounded-2xl py-3 pl-4 bg-[#393E4F]"
-            >
+            <div key={task.id} className="flex items-center rounded-2xl py-3 pl-4 bg-[#393E4F]">
               <input
                 type="checkbox"
                 className="form-checkbox h-5 w-5 text-[#00ADB5] rounded border-gray-300"

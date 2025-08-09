@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import CloseIcon from "@mui/icons-material/Close";
-import { auth, db } from "../app/firebase";
+import React, { useEffect, useState } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
+import { auth, db } from '../app/firebase';
 import {
   query,
   collection,
@@ -10,11 +10,11 @@ import {
   deleteDoc,
   where,
   getDocs,
-} from "firebase/firestore";
-import DatePicker from "react-datepicker";
-import TaskCard from "./TaskCard"; // TaskCardコンポーネントの実装は未定義
-import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
-import "react-datepicker/dist/react-datepicker.css";
+} from 'firebase/firestore';
+import DatePicker from 'react-datepicker';
+import TaskCard from './TaskCard'; // TaskCardコンポーネントの実装は未定義
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import 'react-datepicker/dist/react-datepicker.css';
 
 export default function TaskList() {
   const [tasks, setTasks] = useState([]);
@@ -27,9 +27,9 @@ export default function TaskList() {
       if (user) {
         const fetchTasks = async () => {
           const q = query(
-            collection(db, "tasks"),
-            where("userId", "==", user.uid),
-            where("isDone", "==", false)
+            collection(db, 'tasks'),
+            where('userId', '==', user.uid),
+            where('isDone', '==', false)
           );
           const querySnapshot = await getDocs(q);
           const tasksArr = querySnapshot.docs.map((doc) => ({
@@ -63,14 +63,14 @@ export default function TaskList() {
     if (selectedTask) {
       const updates = {
         ...selectedTask,
-        deadline: selectedDate.toISOString().split("T")[0],
+        deadline: selectedDate.toISOString().split('T')[0],
       };
-      const taskRef = doc(db, "tasks", selectedTask.id);
+      const taskRef = doc(db, 'tasks', selectedTask.id);
       try {
         await updateDoc(taskRef, updates);
         // 更新後のタスクリストをフェッチする必要がある場合は、ここでfetchTasks()を呼び出します。
       } catch (error) {
-        console.error("Error updating task:", error);
+        console.error('Error updating task:', error);
       }
     }
   };
@@ -79,11 +79,7 @@ export default function TaskList() {
     <div>
       <div className="space-y-3">
         {tasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            onCardClick={() => handleTaskCardClick(task)}
-          />
+          <TaskCard key={task.id} task={task} onCardClick={() => handleTaskCardClick(task)} />
         ))}
       </div>
       {showSidebar && selectedTask && (
@@ -98,14 +94,14 @@ export default function TaskList() {
             <input
               name="title"
               type="text"
-              value={selectedTask.title || ""}
+              value={selectedTask.title || ''}
               onChange={handleInputChange}
               className="text-xl font-bold text-white bg-[#2A2A2A] rounded-lg p-4 outline-none border border-transparent focus:border-[#00ADB5]"
               placeholder="タイトル"
             />
             <textarea
               name="memo"
-              value={selectedTask.memo || ""}
+              value={selectedTask.memo || ''}
               onChange={handleInputChange}
               className="text-white bg-[#2A2A2A] rounded-lg p-4 outline-none border border-transparent focus:border-[#00ADB5]"
               placeholder="メモ"
@@ -121,7 +117,7 @@ export default function TaskList() {
               <p className="text-white">緊急度</p>
               <select
                 name="urgency"
-                value={selectedTask.urgency || ""}
+                value={selectedTask.urgency || ''}
                 onChange={handleInputChange}
                 className="text-white bg-[#2A2A2A] rounded-lg p-2 outline-none border border-transparent focus:border-[#00ADB5]"
               >
@@ -134,7 +130,7 @@ export default function TaskList() {
               <p className="text-white">重要度</p>
               <select
                 name="importance"
-                value={selectedTask.importance || ""}
+                value={selectedTask.importance || ''}
                 onChange={handleInputChange}
                 className="text-white bg-[#2A2A2A] rounded-lg p-2 outline-none border border-transparent focus:border-[#00ADB5]"
               >
@@ -142,7 +138,7 @@ export default function TaskList() {
                 <option value="high">高</option>
               </select>
             </div>
-            
+
             <button
               onClick={handleUpdate}
               className="bg-[#00ADB5] text-white rounded-lg p-2 hover:bg-[#008a9e]"
@@ -151,12 +147,12 @@ export default function TaskList() {
             </button>
             <button
               onClick={async () => {
-                const taskRef = doc(db, "tasks", selectedTask.id);
+                const taskRef = doc(db, 'tasks', selectedTask.id);
                 try {
                   await deleteDoc(taskRef);
                   closeSidebar();
                 } catch (error) {
-                  console.error("Error removing task:", error);
+                  console.error('Error removing task:', error);
                 }
               }}
               className="bg-[#FF3C38] text-white rounded-lg p-2 hover:bg-[#d63a36]"

@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { auth } from "../../firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { useRouter } from "next/navigation";
+import { useState } from 'react';
+import { auth } from '../../firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
 
 //登録
 export default function Page() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const router = useRouter();
 
   //　登録ボタンを押した時の処理
@@ -18,21 +18,19 @@ export default function Page() {
 
     // パスワードが8文字未満の場合はエラー
     if (password.length < 8) {
-      setError("パスワードは半角英数8文字以上で入力してください");
+      setError('パスワードは半角英数8文字以上で入力してください');
       return;
     } else {
-
       createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // サインイン
-        const user = userCredential.user;
-        router.push("/CreateProfile");
-      })
-      .catch((error) => {
-        setError(error.message);
-      });
+        .then((userCredential) => {
+          // サインイン
+          const user = userCredential.user;
+          router.push('/CreateProfile');
+        })
+        .catch((error) => {
+          setError(error.message);
+        });
     }
-
   };
 
   return (

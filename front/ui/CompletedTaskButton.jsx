@@ -1,5 +1,5 @@
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import Link from "next/link";
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import Link from 'next/link';
 
 export default function CompletedTaskButton() {
   return (

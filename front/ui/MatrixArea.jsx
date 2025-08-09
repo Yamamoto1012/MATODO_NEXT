@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
-import { auth, db } from "../app/firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { Cached } from "@mui/icons-material";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"; // 追加
-import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp"; // 追加
+import { useEffect, useState } from 'react';
+import { auth, db } from '../app/firebase';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { Cached } from '@mui/icons-material';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'; // 追加
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'; // 追加
 
 function TaskCategory({ title, tasks, bgColorFrom, bgColorTo }) {
   const [showAll, setShowAll] = useState(false);
   const gradientClass = `bg-gradient-to-tr from-${bgColorFrom} to-${bgColorTo}`;
-  
+
   return (
     <div
       className={`${gradientClass} flex flex-col justify-center items-center rounded-lg shadow-md overflow-hidden p-2 `}
@@ -23,10 +23,7 @@ function TaskCategory({ title, tasks, bgColorFrom, bgColorTo }) {
         </div>
       ))}
       {tasks.length > 4 && (
-        <button
-          onClick={() => setShowAll(!showAll)}
-          className="text-white mt-2 hover:underline"
-        >
+        <button onClick={() => setShowAll(!showAll)} className="text-white mt-2 hover:underline">
           {showAll ? (
             <>
               <ArrowDropUpIcon /> 折りたたむ
@@ -49,11 +46,11 @@ export function MatrixArea() {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         const fetchTasks = async () => {
-          const tasksCollectionRef = collection(db, "tasks");
+          const tasksCollectionRef = collection(db, 'tasks');
           const q = query(
             tasksCollectionRef,
-            where("userId", "==", user.uid),
-            where("isDone", "==", false)
+            where('userId', '==', user.uid),
+            where('isDone', '==', false)
           );
           const querySnapshot = await getDocs(q);
           const tasksData = querySnapshot.docs.map((doc) => ({
@@ -71,40 +68,42 @@ export function MatrixArea() {
 
   const categories = [
     {
-      title: "緊急ではないが重要",
-      filter: (task) => task.urgency === "low" && task.importance === "high",
-      bgColorFrom: "green-500",
-      bgColorTo: "green-300",
+      title: '緊急ではないが重要',
+      filter: (task) => task.urgency === 'low' && task.importance === 'high',
+      bgColorFrom: 'green-500',
+      bgColorTo: 'green-300',
     },
     {
-      title: "緊急で重要",
-      filter: (task) => task.urgency === "high" && task.importance === "high",
-      bgColorFrom: "red-500",
-      bgColorTo: "pink-400",
+      title: '緊急で重要',
+      filter: (task) => task.urgency === 'high' && task.importance === 'high',
+      bgColorFrom: 'red-500',
+      bgColorTo: 'pink-400',
     },
     {
-      title: "緊急でも重要でもない",
-      filter: (task) => task.urgency === "low" && task.importance === "low",
-      bgColorFrom: "gray-500",
-      bgColorTo: "gray-300",
+      title: '緊急でも重要でもない',
+      filter: (task) => task.urgency === 'low' && task.importance === 'low',
+      bgColorFrom: 'gray-500',
+      bgColorTo: 'gray-300',
     },
     {
-      title: "緊急だが重要ではない",
-      filter: (task) => task.urgency === "high" && task.importance === "low",
-      bgColorFrom: "blue-500",
-      bgColorTo: "blue-300",
+      title: '緊急だが重要ではない',
+      filter: (task) => task.urgency === 'high' && task.importance === 'low',
+      bgColorFrom: 'blue-500',
+      bgColorTo: 'blue-300',
     },
   ];
-    
+
   const gradientClasses = {
-    "緊急ではないが重要": "bg-gradient-to-tr from-green-500 to-green-300",
-    "緊急で重要": "bg-gradient-to-tr from-red-500 to-pink-400",
-    "緊急でも重要でもない": "bg-gradient-to-tr from-gray-500 to-gray-300",
-    "緊急だが重要ではない": "bg-gradient-to-tr from-blue-500 to-blue-300",
+    緊急ではないが重要: 'bg-gradient-to-tr from-green-500 to-green-300',
+    緊急で重要: 'bg-gradient-to-tr from-red-500 to-pink-400',
+    緊急でも重要でもない: 'bg-gradient-to-tr from-gray-500 to-gray-300',
+    緊急だが重要ではない: 'bg-gradient-to-tr from-blue-500 to-blue-300',
   };
 
   return (
-    <div className={`${gradientClasses} grid grid-cols-2 grid-rows-2 gap-4 p-6 mx-auto mt-12 rounded-xl shadow-xl w-[600px] h-auto md:w-[725px] lg:w-[800px]`}>
+    <div
+      className={`${gradientClasses} grid grid-cols-2 grid-rows-2 gap-4 p-6 mx-auto mt-12 rounded-xl shadow-xl w-[600px] h-auto md:w-[725px] lg:w-[800px]`}
+    >
       <button
         onClick={() => window.location.reload()}
         className="absolute top-5 left-5 bg-gray-200 p-2 rounded-full shadow hover:bg-gray-300"
