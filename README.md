@@ -134,3 +134,25 @@ python app.py
 - UI: Tailwind CSS, MUI
 - 画像: `next.config.js` で `firebasestorage.googleapis.com` を許可
 - スタイル: `front/app/globals.css`
+
+## コーディング規約
+
+プロジェクトのコーディング規約は **`CLAUDE.md` と `.claude/rules/*.md` を正典**とする。Claude Code セッション起動時に自動ロードされる。
+
+### `.claude/rules` (5 本) と `.cursor/rules` (7 本) の対応
+
+| `.claude/rules/*.md` | 対応する `.cursor/rules/*.mdc` |
+|---|---|
+| `style.md` | `02-naming-and-comments.mdc` + `03-code-style.mdc` |
+| `architecture.md` | `01-functional-programming.mdc` + `04-state-mutable.mdc` + `05-component-design.mdc` + `06-project-structure.mdc` |
+| `testing.md` | `07-testing-guideline.mdc` |
+| `dependencies.md` | (新規) — Phase 2 ロードマップ・バージョン固定方針 |
+| `tools.md` | (新規) — Biome / Vitest / TypeScript / Next.js / 将来導入予定の Claude hooks ほか |
+
+`.cursor/rules/taskdoc.mdc` はタスクドキュメントテンプレートでありルール本体ではないため移植対象外。`仕様書テンプレート.md` で代替する。
+
+### `.cursor/rules` との差分理由
+
+- `.cursor/rules` は Cursor 用に書かれており、Tailwind v3 / MUI v5 前提のまま据え置かれている。
+- `.claude/rules` は LastMatorix の現状スタック (yarn / Biome / Vitest / Next.js 15 App Router / React 19) に合わせて書き換え、加えて [imaimai17468/imaimai-front-templete](https://github.com/imaimai17468/imaimai-front-templete) のルール構成 (Colocation / Container-Presenter / No Loops / Tailwind 任意値回避 / AAA + 1 expect / Exact Version Pinning) を取り込んでいる。
+- 差分があった場合は `CLAUDE.md` 側を優先する (本リポジトリ ISSUE #61 の方針)。
