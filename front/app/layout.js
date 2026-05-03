@@ -1,10 +1,20 @@
-import { Roboto } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const roboto = Roboto({
-  weight: ["100", "300", "400", "500", "700", "900"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
+const roboto = localFont({
+  src: [
+    {
+      path: "./fonts/Roboto-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Roboto-Bold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  display: "swap",
 });
 
 export const metadata = {
