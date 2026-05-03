@@ -5,7 +5,7 @@ import { auth } from "../../firebase";
 import { useRouter } from "next/navigation";
 
 //既存のユーザーでログイン
-export default function page() {
+export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
