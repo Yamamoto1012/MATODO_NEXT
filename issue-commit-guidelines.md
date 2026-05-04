@@ -143,6 +143,58 @@ gh pr create --base main
 
 ---
 
+## PR 規約
+
+### 大原則
+
+**コミットメッセージ規約と PR タイトル規約は別物**。Conventional Commits は **コミット専用**であり、PR タイトルでは使わない。
+
+### PR タイトル形式
+
+`#<ISSUE番号> <ISSUE タイトル>` で書く。
+
+- ISSUE タイトル先頭の `[type]` プレフィックス (`[Feature]` / `[Refactor]` / `[chore]` 等) は **外す**
+- ISSUE 番号は省略しない (検索性のため)
+- ISSUE タイトルから大幅に意訳しない (元 ISSUE と PR を 1 対 1 で対応付けるため)
+
+| ISSUE | PR タイトル (OK) | PR タイトル (NG) |
+|---|---|---|
+| `#111 [chore] biome FIXABLE warnings 13 件を auto-fix で解消` | `#111 biome FIXABLE warnings 13 件を auto-fix で解消` | `refactor: biome FIXABLE warnings 13 件を auto-fix で解消` |
+| `#100 [Refactor] ブランチ運用ルールを main 一本運用に書き換える` | `#100 ブランチ運用ルールを main 一本運用に書き換える` | `refactor: ブランチ運用ルールを main 一本運用に書き換える` |
+| `#115 [Feature] PR タイトル / テンプレ規約を明文化し、PreToolUse hook で AI に強制する` | `#115 PR タイトル / テンプレ規約を明文化し、PreToolUse hook で AI に強制する` | `feat: PR テンプレ規約 hook を追加` |
+
+### PR 本文
+
+`.github/pull_request_template.md` の章立てに従う。
+
+必須見出し (この 4 つは省略不可):
+
+- `## 概要`
+- `## 関連Issue` — 直下に `close #<ISSUE番号>` を 1 行で含める (大文字 `Closes` ではなく、テンプレ指示通り `close` で統一)
+- `## 変更内容`
+- `## チェックリスト`
+
+任意見出し (該当する場合のみ記入):
+
+- `## スクリーンショット` (UI 変更時)
+- `## テスト結果`
+- `## 備考`
+
+### 禁止事項
+
+- ❌ PR タイトルに `<type>: <subject>` 形式を使う (例: `feat: ...` / `docs: ...`)
+- ❌ ISSUE 番号を省略した PR タイトル
+- ❌ `## 関連Issue` 直下の `close #<番号>` を省略 (マージ時の自動 close が効かない)
+- ❌ テンプレ章立てを無視した独自フォーマットの本文
+
+### 強制 (AI 操作時のみ)
+
+`gh pr create` / `gh pr edit` を AI が呼ぶ際は、`.claude/hooks/pr-template-check.sh` が PreToolUse hook として走る。タイトル形式 / 必須見出し / `close #<番号>` のいずれかを満たさない場合は exit 2 で block する。AI 向けの実装手順は `.claude/rules/pull-request.md` を参照。
+
+人間が手動で `gh pr create` する場合は hook の対象外だが、本規約は人間の操作にも等しく適用される。
+
+---
+
 ## 具体例: 「メニューから注文できる」
 
 仕様: ユーザーがメニューを見て、商品を選んで注文できるようにする。
@@ -270,6 +322,13 @@ gh pr create --base main
 - [ ] 各コミットは単独でビルド・テストが通る状態か
 - [ ] コミットメッセージは Conventional Commits 形式で、内容を正確に表しているか
 - [ ] 機能追加とリファクタが同じコミットに混ざっていないか
+
+### PR のチェック
+- [ ] PR タイトルは `#<ISSUE番号> <ISSUE タイトル>` 形式 ( `[type]` プレフィックスは外す)
+- [ ] PR タイトルに Conventional Commits 形式 (`feat: ...` 等) を **使っていない**
+- [ ] PR 本文は `.github/pull_request_template.md` の章立てに従っている
+- [ ] `## 関連Issue` 直下に `close #<ISSUE番号>` を 1 行で含めている (`Closes` ではなく `close`)
+- [ ] 必須見出し (`## 概要` / `## 関連Issue` / `## 変更内容` / `## チェックリスト`) が揃っている
 
 ---
 
