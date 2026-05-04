@@ -84,5 +84,6 @@
       "Bash(yarn install:*)",
       "Bash(yarn:*)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": ["context7"]
 }
