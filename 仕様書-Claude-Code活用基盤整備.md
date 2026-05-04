@@ -308,13 +308,16 @@ MCP サーバーのコマンド定義。プロジェクト共有。
 
 | 順 | ISSUE | 内容 | 理由 |
 | --- | --- | --- | --- |
-| 1 | B-#2 | TypeScript 5.3.2 → 最新マイナー | 型推論強化を先に。後続バージョンアップでの型エラー検出が早くなる |
-| 2 | B-#1 | Next.js 15 系最新マイナー追従 | App Router 等の挙動安定化 |
-| 3 | B-#7 | ESLint v8 → v9 (旧 #56 を Close して置き換え) | flat config 化 |
-| 4 | B-#6 | Tailwind v3 → v4 (旧 #57 を Close して置き換え) | UI スタイル基盤を先に固める |
-| 5 | B-#3 | MUI v5 → v7 (一気に上げる) | UI 影響最大、Phase 1 の品質ゲート上で実施したい |
-| 6 | B-#4 | react-datepicker v4 → 最新 | 局所影響 |
-| 7 | B-#5 | その他マイナー追従 (axios / @dnd-kit / vitest 等) | 機械的更新 |
+| 1 | B-#0 (#108) | Yarn 4.1.0 → 4.14.1 (バンドル方式に転換) | 後続サブの `yarn install` 副作用 (`^` 範囲内の lockfile 巻き込み更新) を抑える前提整備 |
+| 2 | B-#2 | TypeScript 5.3.2 → 最新マイナー | 型推論強化を先に。後続バージョンアップでの型エラー検出が早くなる |
+| 3 | B-#1 | Next.js 15 系最新マイナー追従 | App Router 等の挙動安定化 |
+| 4 | B-#7 | ESLint v8 → v9 (旧 #56 を Close して置き換え) | flat config 化 |
+| 5 | B-#6 | Tailwind v3 → v4 (旧 #57 を Close して置き換え) | UI スタイル基盤を先に固める |
+| 6 | B-#3 | MUI v5 → v7 (一気に上げる) | UI 影響最大、Phase 1 の品質ゲート上で実施したい |
+| 7 | B-#4 | react-datepicker v4 → 最新 | 局所影響 |
+| 8 | B-#5 | その他マイナー追従 (axios / @dnd-kit / vitest 等) | 機械的更新 (B-#0 マージで lockfile が一括追従されるため、本サブのスコープは大幅縮小予定) |
+
+**B-#0 (Yarn バンドル化)** は `yarn set version 4.14.1` で `.yarnrc.yml` の `yarnPath` を更新し、`.yarn/releases/yarn-*.cjs` をコミット対象とすることで CI / 開発環境間のバージョン差異を排除する。同時に `package.json` の `packageManager` フィールドで corepack にも対応。
 
 **B-#3 (MUI v5→v7)** は中継せず一気に上げる方針。Theme API / Slot props / package 構成が大きく変わるが、同じ箇所を 2 回触るコストを避けるため。
 
@@ -328,6 +331,7 @@ Phase 1 と Phase 2 が揃ったら、本来やりたいフロントリファク
 
 ## サブ ISSUE 一覧 (新規起票)
 
+- **B-#0** [Chore] Yarn を 4.1.0 から 4.14.1 にバンドルする (Phase 2 の前提整備、#108)
 - **B-#1** [Chore] Next.js を 15 系最新マイナーに追従する
 - **B-#2** [Chore] TypeScript を 5.3.2 から最新マイナーに上げる
 - **B-#3** [Chore] MUI を v5 から v7 に一気に上げる (Theme API / Slot props 全面対応)
