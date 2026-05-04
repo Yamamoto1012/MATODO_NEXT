@@ -24,7 +24,7 @@ export default function Page() {
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           // サインイン
-          const user = userCredential.user;
+          const _user = userCredential.user;
           router.push('/CreateProfile');
         })
         .catch((error) => {

@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { auth, db } from '../app/firebase';
 import {
   query,
   collection,
-  onSnapshot,
   doc,
   updateDoc,
   deleteDoc,
@@ -13,7 +12,6 @@ import {
 } from 'firebase/firestore';
 import DatePicker from 'react-datepicker';
 import TaskCard from './TaskCard'; // TaskCardコンポーネントの実装は未定義
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import 'react-datepicker/dist/react-datepicker.css';
 
 export default function TaskList() {
