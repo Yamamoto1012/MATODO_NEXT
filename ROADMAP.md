@@ -40,13 +40,38 @@ flowchart TB
 4. **Phase3** (Jotai) — 起票して着手
 5. **Phase4** (機能別フォルダ) — Phase3 完了後
 
+## refront ライフサイクル
+
+`refront` は 2025-08-08 に main から分岐した長命統合ブランチ。当初は土台整備作業 (依存更新 / Docker 削除 / Biome / Vitest など) を main から隔離する目的で作成され、2026-05 時点で 27 コミット (5 トピック) が main 未反映で累積している。
+
+3 観点 (Git 一般原則 / refront 事実調査 / 戦略提案) で考察した結果、**1 人開発の規模に対して長命 staging ブランチの維持コストが過剰** (スコアカード 14/25) との結論。以下の方針で段階的に廃止する。
+
+### 採用方針: 案 A「使命完遂後アーカイブ」
+
+| ステップ | 内容 | 担当 ISSUE | 状態 |
+| --- | --- | --- | --- |
+| 1 | 親C #80 全サブを完遂 (#81 ✅ / #82 / #83 / #84 / #85) | 各サブ | 進行中 |
+| 2 | refront 上にあって親C スコープ外の作業を別途 main 反映 (主に PR #79 = #61 規約自動適用) | C-6 = #93 | 起票済 |
+| 3 | refront → main 差分が 0 になることを確認 | C-7 内手順 | 未着手 |
+| 4 | `git tag archive/refront-2026-05 origin/refront && git push --tags` で歴史を固定 | C-7 = #94 | 起票済 |
+| 5 | `git push origin --delete refront` でリモート削除、#80 を Close | C-7 = #94 | 未着手 |
+| 6 | 以降は **全 ISSUE を main ベース** で運用 (例外なし) | — | ステップ 5 後 |
+
+**撤退条件**: ステップ 3 で予期せぬ差分 (cherry-pick 漏れ等) が発見され、回復に 2 PR 以上を要すると判明した場合は戦略を再検討する。アーカイブ後に問題が判明した場合は `git checkout -b refront-restored archive/refront-2026-05` で復旧可能。
+
+### 期間中の運用ルール
+
+- **新規 ISSUE のベース**: 原則 `main`。ただし refront にある未反映作業に依存する場合に限り、当該サブ ISSUE で個別判断 (PR 説明文に依存先を明記)
+- **refront への新規コミット禁止**: 累積を増やさない (PR #79 のような「親C スコープ外がまた refront に乗る」事故の再発防止)
+- **採用根拠の出典**: Pro Git Book Ch.3 / GitHub Docs "GitHub flow" / Atlassian "Comparing Workflows"
+
 ## 親A: Claude Code 活用基盤整備 (#60)
 
 仕様書: `仕様書-Claude-Code活用基盤整備.md`
 
 | ID | 内容 | ISSUE | 状態 | 触るファイル | 並列性 / 前提 |
 | --- | --- | --- | --- | --- | --- |
-| A-#1 | 規約自動適用 | #61 | OPEN ⚠️ | `CLAUDE.md`, `.claude/rules/*.md` | refront 上に PR #79 で **既にマージ済み**。main 反映 ISSUE が別途要 (下記参照) |
+| A-#1 | 規約自動適用 | #61 | OPEN ⚠️ | `CLAUDE.md`, `.claude/rules/*.md` | refront 上に PR #79 で **既にマージ済み**。main 反映は親C C-6 (#93) で対応 |
 | A-#2 | 破壊操作ブロック | #62 | OPEN | `.claude/settings.json` (新規) | 独立。settings.json 共有: #63/#64/#67 より先に入れる |
 | A-#3 | PostToolUse: 編集ごと lint/typecheck | #63 | OPEN | `.claude/settings.json` (hooks 追記) | 要 #62 + #83 (Biome) + typecheck script |
 | A-#4 | Stop: 基本品質ゲート | #64 | OPEN | `.claude/hooks/`, `settings.json` (hooks) | 要 #63 |
@@ -92,12 +117,8 @@ refront ブランチには main 未反映のコミットが 4 トピックある
 | C-3 | Biome を導入する | #83 | OPEN | `406571c7` / `fd14692d` / `f981ad41` / `40b15141` (元 PR #58) |
 | C-4 | Vitest と Firestore テスト整備を導入する | #84 | OPEN | `b5793d4a` / `ee82e6fa` / `997466fc` / `500f879b` / `6b6c18ed` / `ed98c965` (元 PR #59) |
 | C-5 | ISSUE / ブランチ運用ルールを issue-commit-guidelines.md に追記する | #85 | OPEN | (新規作業) |
-
-### 親C スコープ外だが要対応
-
-| 件 | 状態 | 対応 |
-| --- | --- | --- |
-| #61 (Claude Code 規約自動適用) を main に反映する | OPEN ⚠️ | refront 上に PR #79 でマージ済み (`5df6ee81` / `495e68a6` / `57ea09dd` / `10e65043`) — **新規サブ ISSUE「#61 を main に反映する」を起票要**。親C #80 のスコープに追加するか別途決める |
+| C-6 | #61 (Claude Code 規約自動適用) を main に反映する | #93 | OPEN | refront 上 PR #79 の 4 commit (`5df6ee81` / `495e68a6` / `57ea09dd` / `10e65043`) を cherry-pick で取り込む |
+| C-7 | refront ブランチをアーカイブタグ化して削除する | #94 | OPEN | 親C 全サブ + C-6 完了後に着手。手順は §「refront ライフサイクル」参照 |
 
 ## 未起票フェーズ
 
@@ -154,3 +175,4 @@ refront ブランチには main 未反映のコミットが 4 トピックある
 ## 更新履歴
 
 - **2026-05-04** 初版作成。親A/B/C と Phase3/4 を整理。#61 が refront 上で実装済み (PR #79) で main 未反映であることを明記。
+- **2026-05-04 (第2版)** §「refront ライフサイクル」節を新設し、**案 A「使命完遂後アーカイブ」** を採用方針として確定 (3 観点考察に基づく)。親C 表に C-6 (#93 = #61 main 反映) と C-7 (#94 = refront アーカイブ化) を追加。「親C スコープ外」節を削除し C-6 として親C に統合。
