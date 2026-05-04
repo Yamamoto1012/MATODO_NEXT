@@ -23,7 +23,11 @@ function TaskCategory({ title, tasks, bgColorFrom, bgColorTo }) {
         </div>
       ))}
       {tasks.length > 4 && (
-        <button onClick={() => setShowAll(!showAll)} className="text-white mt-2 hover:underline">
+        <button
+          type="button"
+          onClick={() => setShowAll(!showAll)}
+          className="text-white mt-2 hover:underline"
+        >
           {showAll ? (
             <>
               <ArrowDropUpIcon /> 折りたたむ
@@ -105,6 +109,7 @@ export function MatrixArea() {
       className={`${gradientClasses} grid grid-cols-2 grid-rows-2 gap-4 p-6 mx-auto mt-12 rounded-xl shadow-xl w-[600px] h-auto md:w-[725px] lg:w-[800px]`}
     >
       <button
+        type="button"
         onClick={() => window.location.reload()}
         className="absolute top-5 left-5 bg-gray-200 p-2 rounded-full shadow hover:bg-gray-300"
       >
