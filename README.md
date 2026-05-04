@@ -1,6 +1,6 @@
 # Matodo (LastMatorix)
 
-緊急度 × 重要度（アイゼンハワー・マトリクス）に基づいてタスクを整理・管理するフルスタックアプリです。フロントは Next.js 14（App Router）+ Firebase（Auth/Firestore/Storage）+ Tailwind CSS、バックエンドは Flask（スクレイピング用）で構成されています。Docker Compose でフロント/バックエンドを開発起動できます。
+緊急度 × 重要度（アイゼンハワー・マトリクス）に基づいてタスクを整理・管理するフルスタックアプリです。フロントは Next.js 14（App Router）+ Firebase（Auth/Firestore/Storage）+ Tailwind CSS、バックエンドは Flask（スクレイピング用）で構成されています。フロント / バックエンドはそれぞれローカルでネイティブに起動します。
 
 ## 機能概要
 
@@ -24,7 +24,6 @@
 ```
 backend/         Flask アプリ（スクレイピング）
 front/           Next.js アプリ（App Router）
-docker-compose.yml
 ```
 
 主なファイル:
@@ -42,7 +41,6 @@ docker-compose.yml
 
 - Node.js 20 以上 / Yarn
 - Python 3.12
-- Docker (任意、Compose での起動をサポート)
 - Firebase プロジェクト（Auth, Firestore, Storage を有効化）
 
 ## 環境変数
@@ -65,22 +63,7 @@ uid=ポータルID
 pw=パスワード
 ```
 
-`docker-compose.yml` は `front/.env.local` を読み込みます。
-
-## ローカル開発（Docker あり）
-
-1) ルートで以下を実行
-
-```bash
-docker compose up --build
-```
-
-- Frontend: `http://localhost:3000`
-- Backend: `http://localhost:5001`（内部で Flask 5000 → 外部 5001）
-
-補足: `front/dockerfile` と `backend/dockerfile` は OS によって大文字/小文字が区別されます。`docker-compose.yml` は `front/Dockerfile` を参照しているため、ファイル名は `Dockerfile` 推奨です（必要に応じてプロジェクト内の表記を統一してください）。
-
-## ローカル開発（手動）
+## ローカル開発
 
 フロントエンド:
 
@@ -138,7 +121,7 @@ flask run --host=0.0.0.0 --port 5000
 
 `backend/app.py` は学内ポータルへのログインと科目取得の試験的コードを含みます。実際の運用では法令・規約順守、MFA 対応、例外処理、CSRF/SSL 検証、API 化（JSON 返却）などの強化が必要です。
 
-起動（Docker なし）:
+起動:
 
 ```bash
 cd backend
