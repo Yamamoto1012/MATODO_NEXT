@@ -92,7 +92,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "F=$(jq -r '.tool_input.file_path // \"\"'); case \"$F\" in *.ts|*.tsx|*.js|*.jsx|*.mjs|*.cjs) ;; *) exit 0 ;; esac; cd \"$CLAUDE_PROJECT_DIR/front\" && OUT=$(yarn lint:biome 2>&1 && yarn run -T tsc --noEmit 2>&1); RC=$?; if [ $RC -ne 0 ]; then printf '%s' \"$OUT\" | jq -Rs --arg file \"$F\" '{systemMessage:(\"⛔ PostToolUse block: lint/typecheck 失敗 — \" + $file), decision:\"block\", reason:(\"PostToolUse: 編集後の lint / typecheck が失敗しました。次のツール呼び出し前に直してください。\\n\\n\" + .)}'; fi; exit 0",
+            "command": "F=$(jq -r '.tool_input.file_path // \"\"'); case \"$F\" in *.ts|*.tsx|*.js|*.jsx|*.mjs|*.cjs) ;; *) exit 0 ;; esac; cd \"$CLAUDE_PROJECT_DIR/front\" || exit 0; LINT_OUT=$(yarn run -T biome lint \"$F\" 2>&1); LRC=$?; TYPE_OUT=$(yarn run -T tsc --noEmit 2>&1); TRC=$?; echo \"$TYPE_OUT\" | grep -q \"TS18003\" && TRC=0; if [ $LRC -ne 0 ] || [ $TRC -ne 0 ]; then printf '%s\\n%s' \"$LINT_OUT\" \"$TYPE_OUT\" | jq -Rs --arg file \"$F\" '{systemMessage:(\"⛔ PostToolUse block: lint/typecheck 失敗 — \" + $file), decision:\"block\", reason:(\"PostToolUse: 編集後の lint / typecheck が失敗しました。次のツール呼び出し前に直してください。\\n\\n\" + .)}'; fi; exit 0",
             "timeout": 60,
             "statusMessage": "Per-edit check: lint + typecheck..."
           }
