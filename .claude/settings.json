@@ -25,6 +25,29 @@
       "Read(./.env.production)",
       "Write(./.env*)",
       "Edit(./.env*)"
+    ],
+    "ask": [
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git merge:*)",
+      "Bash(git rebase:*)",
+      "Bash(git cherry-pick:*)",
+      "Bash(git reset:*)",
+      "Bash(git checkout:*)",
+      "Bash(git revert:*)",
+      "Bash(git tag:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr edit:*)",
+      "Bash(gh pr close:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(gh pr comment:*)",
+      "Bash(gh issue:*)",
+      "Bash(yarn add:*)",
+      "Bash(yarn remove:*)",
+      "Bash(npm install:*)",
+      "Bash(rm:*)",
+      "Bash(mv:*)",
+      "Bash(cp:*)"
     ]
   }
 }
