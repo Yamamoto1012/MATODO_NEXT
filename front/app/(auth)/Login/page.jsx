@@ -27,7 +27,7 @@ export default function Page() {
   const handleLogin = (e) => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then((_userCredential) => {
         // ログイン成功時の処理
         alert('ログインしました');
         router.push('/Home');

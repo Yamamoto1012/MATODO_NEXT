@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { auth, db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -52,7 +52,7 @@ export default function ProfilePage() {
         <div className="flex flex-col items-center">
           <div className=" w-96 h-64 mb-3 items-center flex justify-center">
             <Image
-              src={user && user.iconUrl ? user.iconUrl : '/default-icon.svg'}
+              src={user?.iconUrl ? user.iconUrl : '/default-icon.svg'}
               width={250}
               height={250}
               alt={user ? user.name : 'プロフィール画像'}

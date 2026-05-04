@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import { addDoc, collection } from 'firebase/firestore';
 import { auth, db } from '../app/firebase';
