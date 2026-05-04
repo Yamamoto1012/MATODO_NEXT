@@ -62,18 +62,21 @@ export default function ProfilePage() {
           <p className="text-lg font-semibold">{user ? user.name : '読み込み中...'}</p>
           <p className="text-sm">{user ? user.position : '役職'}</p>
           <button
+            type="button"
             onClick={handleHome}
             className="mt-4 w-full bg-[#BDAE93] text-white font-bold py-2 px-4 rounded-lg space-y-1 transition-transform duration-150 ease-in-out transform hover:scale-105 shadow-xl"
           >
             マトリックスに戻る
           </button>
           <button
+            type="button"
             onClick={handleLogin}
             className="mt-4 w-full bg-[#00ADB5] text-white font-bold py-2 px-4 rounded-lg space-y-1 transition-transform duration-150 ease-in-out transform hover:scale-105 shadow-xl"
           >
             アカウントを変更
           </button>
           <button
+            type="button"
             onClick={handleSignOut}
             className="mt-4 w-full bg-[#FF6B6B] text-white font-bold py-2 px-4 rounded-lg transition-transform duration-150 ease-in-out transform hover:scale-105 shadow-xl"
           >

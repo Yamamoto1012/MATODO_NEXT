@@ -31,7 +31,7 @@ export function GoogleLogin() {
   };
   return (
     <div>
-      <button onClick={handleGoogle} className="focus:outline-none">
+      <button type="button" onClick={handleGoogle} className="focus:outline-none">
         <div className="flex flex-col justify-center items-center space-y-2 transition-transform duration-150 ease-in-out transform hover:scale-105">
           <div>googleアカウントでログイン</div>
           <Image src="/google.svg" width={50} height={50} alt="Google" />

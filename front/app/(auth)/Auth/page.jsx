@@ -19,6 +19,7 @@ export default function AuthPage() {
         <h1 className="text-[54px] font-bold text-gray-800">Matodo</h1>
 
         <button
+          type="button"
           className="text-white bg-[#00ADB5] hover:bg-blue-700 font-bold py-3 px-4 rounded w-full transition-transform duration-150 ease-in-out transform hover:scale-105 shadow-xl"
           onClick={handleCreate}
         >
@@ -26,6 +27,7 @@ export default function AuthPage() {
         </button>
 
         <button
+          type="button"
           className="text-gray-800 bg-white border border-gray-300 hover:bg-gray-100 font-bold py-3 px-4 rounded w-full transition-transform duration-150 ease-in-out transform hover:scale-105 shadow-xl"
           onClick={handleLogin}
         >

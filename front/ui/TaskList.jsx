@@ -83,6 +83,7 @@ export default function TaskList() {
       {showSidebar && selectedTask && (
         <div className="fixed inset-y-0 right-0 w-80 bg-[#1F1F1F] p-8 shadow-2xl z-50 transform transition-transform duration-300 ease-in-out translate-x-0">
           <button
+            type="button"
             onClick={closeSidebar}
             className="text-white rounded-full p-2 hover:bg-[#333333] focus:outline-none absolute top-4 right-4"
           >
@@ -138,12 +139,14 @@ export default function TaskList() {
             </div>
 
             <button
+              type="button"
               onClick={handleUpdate}
               className="bg-[#00ADB5] text-white rounded-lg p-2 hover:bg-[#008a9e]"
             >
               更新
             </button>
             <button
+              type="button"
               onClick={async () => {
                 const taskRef = doc(db, 'tasks', selectedTask.id);
                 try {
