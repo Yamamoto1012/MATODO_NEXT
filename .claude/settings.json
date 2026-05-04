@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(rm -fr:*)",
+      "Bash(rm -r:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git push --force-with-lease:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean -fd:*)",
+      "Bash(git clean -fdx:*)",
+      "Bash(git branch -D:*)",
+      "Bash(git checkout .)",
+      "Bash(git checkout --:*)",
+      "Bash(git restore .)",
+      "Bash(git restore --:*)",
+      "Bash(git commit --amend:*)",
+      "Bash(git rebase -i:*)",
+      "Bash(sudo:*)",
+      "Bash(chmod -R:*)",
+      "Read(./.env)",
+      "Read(./.env.local)",
+      "Read(./.env.development)",
+      "Read(./.env.production)",
+      "Write(./.env*)",
+      "Edit(./.env*)"
+    ]
+  }
+}
