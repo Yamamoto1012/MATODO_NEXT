@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
-import { addDoc, collection } from "firebase/firestore";
-import { auth, db } from "../app/firebase";
+import React, { useState } from 'react';
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
+import { addDoc, collection } from 'firebase/firestore';
+import { auth, db } from '../app/firebase';
 
 export default function AddTask() {
-  const [text, setText] = useState("");
+  const [text, setText] = useState('');
   const [isComposing, setIsComposing] = useState(false); // 変換状態を追跡するための状態
 
   const formatTodayDate = () => {
@@ -16,15 +16,15 @@ export default function AddTask() {
   };
 
   const createNewTask = () => {
-    if (text.trim() === "") return; // 空のタスクを防ぐ
+    if (text.trim() === '') return; // 空のタスクを防ぐ
 
     const newTask = {
       userId: auth.currentUser.uid,
       title: text,
       description: null,
-      importance: "high",
+      importance: 'high',
       isDone: false,
-      urgency: "high",
+      urgency: 'high',
       deadline: formatTodayDate(),
     };
     return newTask;
@@ -33,18 +33,18 @@ export default function AddTask() {
   const changeText = (e) => setText(e.target.value);
 
   const handleKeyDown = async (e) => {
-    if (e.key === "Enter" && !isComposing) {
+    if (e.key === 'Enter' && !isComposing) {
       const newTask = createNewTask();
       if (newTask) {
         try {
-          await addDoc(collection(db, "tasks"), newTask);
-          setText("");
+          await addDoc(collection(db, 'tasks'), newTask);
+          setText('');
         } catch (error) {
-          console.error("タスクの作成に失敗しました:", error);
+          console.error('タスクの作成に失敗しました:', error);
         }
       }
-    } else if (e.key === "Escape") {
-      setText("");
+    } else if (e.key === 'Escape') {
+      setText('');
     }
   };
 
