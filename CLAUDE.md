@@ -9,6 +9,7 @@
 @.claude/rules/testing.md
 @.claude/rules/dependencies.md
 @.claude/rules/tools.md
+@.claude/rules/pull-request.md
 
 ## 主要ドキュメント
 
