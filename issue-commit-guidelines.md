@@ -104,47 +104,42 @@
 
 ## ブランチ運用のルール
 
-`feature/<番号>` ブランチを切るときの **PR ベースブランチ** を間違えないための運用規約。誤ったベース指定は PR ノイズの主要原因 (実例は本セクション末尾の失敗事例)。
+### 基本方針: main 一本運用
 
-### 全体フロー
+`feature/<番号>` ブランチは **常に `origin/main` から切る**。PR は **常に `main` をベース**にする。
 
+```bash
+# ブランチ作成 (必ず origin/main を起点に明示する)
+git switch -c feature/<ISSUE番号> origin/main
+
+# PR 作成 (--base main を明示する)
+gh pr create --base main
 ```
-親 ISSUE (ブランチあり)
-  └─ feature/<サブ番号> → 親ブランチへ PR & マージ
-親ブランチ (実装完了) → refront へ PR & マージ
-refront → main へ PR & マージ
-```
 
-### サブ ISSUE のベースブランチ判定
+### 禁止事項
 
-サブ ISSUE 着手時、**親 ISSUE の状態** で PR ベース先が決まる:
+- ❌ 親 ISSUE ブランチを起点にしたブランチ切り出し (階層運用)
+- ❌ 集約ブランチ経由の運用
+- ❌ `git switch -c feature/<番号>` のみ (現在ブランチが起点になり、古い差分が混入する)
 
-| 親 ISSUE の状態 | サブ ISSUE のベース | サブ ISSUE のマージ先 |
-|---|---|---|
-| 親もブランチを持つ (実装あり) | 親ブランチ | 親ブランチへ PR & マージ |
-| 親はハブ (実装を持たない) | `refront` (または `main`) | `refront` (または `main`) へ PR & マージ |
+### 新規 ISSUE 着手の手順
 
-「親はハブ」の判定は、親 ISSUE 本文に「**本 ISSUE は親 ISSUE (ハブ)。実作業はサブ ISSUE で行う**」等の明記があるかで行う (例: #80)。明記が無い場合は本文の「想定コミット」「想定差分」が空かどうかで判定し、迷ったらユーザーに確認する。
-
-### 親ブランチ → refront → main の昇格
-
-1. 親ブランチ上で全サブ ISSUE がマージされ完了条件を満たしたら、**`refront` に PR & マージ** する
-2. `refront` は土台整備の集約ブランチ。複数の親ブランチからのマージを蓄積する
-3. `refront` の累積差分は **土台整備が一段落したタイミングで `main` に PR & マージ** する (急がない / トピック単位で順次反映するハブ ISSUE を別途切るのが望ましい)
+1. `git fetch origin` でリモートを最新化
+2. `git switch -c feature/<ISSUE番号> origin/main` でブランチ作成
+3. 実装 → コミット
+4. `gh pr create --base main` で PR 作成
 
 ### PR 作成時のチェック
 
-PR を作る前に必ず確認する:
+- [ ] `git switch -c` の起点に `origin/main` を明示したか
+- [ ] `gh pr create --base main` を明示したか (省略するとデフォルトが使われ事故の元)
+- [ ] PR 画面の「base ← compare」表示が `main ← feature/<番号>` になっているか
 
-- [ ] サブ ISSUE の場合: 親 ISSUE の状態を見てベースブランチを決めたか
-- [ ] `gh pr create --base <ブランチ>` の `--base` に正しいブランチを指定したか (省略するとデフォルトの `main` になり事故の元)
-- [ ] PR 画面の「base ← compare」表示が想定通りか (誤指定すると累積差分が PR ノイズとして混入する)
+### 過去の失敗事例 (PR #79 / ISSUE #61) — historical note
 
-### 失敗事例: PR #79 (ISSUE #61)
+**経緯**: 集約ブランチを運用していた時期、PR #79 ではベースブランチの誤指定により、累積差分 22 コミット / 43 ファイルがノイズとして混入する事故が発生した。
 
-PR #79 を初期に **`main` ベース** で作成してしまい、`refront` 上に蓄積されていた 22 コミット / 43 ファイル分の土台整備差分が PR にノイズとして混入した。後から `refront` ベースに変更してノイズ除去した。
-
-教訓: **サブ ISSUE の親が実装を持つ場合、ベースは `main` ではなく親ブランチ (もしくは `refront`)**。`gh pr create` の `--base` は明示する。
+**教訓**: `gh pr create --base main` の明示と、`git switch -c feature/<番号> origin/main` による起点固定が再発防止の要。
 
 ---
 
