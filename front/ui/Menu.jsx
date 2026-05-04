@@ -1,9 +1,9 @@
-import React from "react";
-import Days from "./Days";
-import ProfileCard from "./ProfileCard";
-import TaskList from "./TaskList";
-import CompletedTaskButton from "./CompletedTaskButton";
-import ScrapingButton from "./ScrapingButton";
+import React from 'react';
+import Days from './Days';
+import ProfileCard from './ProfileCard';
+import TaskList from './TaskList';
+import CompletedTaskButton from './CompletedTaskButton';
+import ScrapingButton from './ScrapingButton';
 
 function Menu() {
   return (
