@@ -42,8 +42,9 @@ export default function TaskCard({ task, onCheckboxChange, onCardClick }) {
   };
 
   return (
-    <div
-      className="bg-[#2B2D42] rounded-3xl shadow-md p-2 mx-2 flex items-center transform transition-transform duration-150 ease-in-out hover:scale-105"
+    <button
+      type="button"
+      className="bg-[#2B2D42] rounded-3xl shadow-md p-2 mx-2 flex items-center w-full text-left border-0 cursor-pointer transform transition-transform duration-150 ease-in-out hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
       onClick={() => onCardClick(task)}
     >
       <div className="flex items-center h-4 w-4 ml-2 rounded-full border-none">
@@ -64,6 +65,6 @@ export default function TaskCard({ task, onCheckboxChange, onCardClick }) {
           {remainingTime()}
         </p>
       </div>
-    </div>
+    </button>
   );
 }
